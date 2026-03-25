@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don Tasko - Restaurante</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Playfair Display', serif; }
+        .glass { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); }
+        .glass-dark { background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px); }
+        .text-shadow { text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        .menu-item { transition: all 0.3s ease; }
+        .menu-item:hover { transform: translateX(10px); }
+        .wine-item { transition: all 0.3s ease; }
+        .wine-item:hover { transform: translateX(10px); }
+        .slot-available { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        .slot-occupied { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+        .slot-selected { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.6s ease-out; }
+        .parallax { background-attachment: fixed; background-position: center; background-repeat: no-repeat; background-size: cover; }
+        .nav-link { position: relative; }
+        .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -4px; left: 0; background-color: #f59e0b; transition: width 0.3s; }
+        .nav-link:hover::after { width: 100%; }
+    </style>
+</head>
+<body class="bg-stone-900 text-stone-100">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-dark border-b border-stone-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex-shrink-0 flex items-center">
+                    <h1 class="font-display text-3xl font-bold text-amber-500 tracking-wider">DON TASKO</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="#home" class="nav-link px-3 py-2 text-sm font-medium hover:text-amber-500 transition">Início</a>
+                        <a href="#menu" class="nav-link px-3 py-2 text-sm font-medium hover:text-amber-500 transition">Menu</a>
+                        <a href="#garrafeira" class="nav-link px-3 py-2 text-sm font-medium hover:text-amber-500 transition">Garrafeira</a>
+                        <a href="#reservas" class="nav-link px-3 py-2 text-sm font-medium hover:text-amber-500 transition">Reservas</a>
+                        <a href="#admin" class="nav-link px-3 py-2 text-sm font-medium text-amber-500 hover:text-amber-400 transition"><i class="fas fa-lock mr-1"></i>Admin</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button onclick="toggleMobileMenu()" class="text-stone-300 hover:text-white p-2">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden md:hidden glass-dark border-t border-stone-700">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#home" class="block px-3 py-2 text-base font-medium hover:text-amber-500">Início</a>
+                <a href="#menu" class="block px-3 py-2 text-base font-medium hover:text-amber-500">Menu</a>
+                <a href="#garrafeira" class="block px-3 py-2 text-base font-medium hover:text-amber-500">Garrafeira</a>
+                <a href="#reservas" class="block px-3 py-2 text-base font-medium hover:text-amber-500">Reservas</a>
+                <a href="#admin" class="block px-3 py-2 text-base font-medium text-amber-500">Admin</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative h-screen flex items-center justify-center parallax" style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1920');">
+        <div class="text-center px-4 animate-fade-in">
+            <h1 class="font-display text-6xl md:text-8xl font-bold mb-6 text-shadow text-white">DON TASKO</h1>
+            <p class="text-xl md:text-2xl mb-8 text-stone-300 font-light tracking-wide">Culinária de Autor & Experiências Gastronómicas</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#reservas" class="px-8 py-4 bg-amber-600 hover:bg-amber-700 text-white rounded-full font-semibold transition transform hover:scale-105 shadow-lg">
+                    Reservar Mesa
+                </a>
+                <a href="#menu" class="px-8 py-4 border-2 border-white hover:bg-white hover:text-stone-900 text-white rounded-full font-semibold transition transform hover:scale-105">
+                    Ver Menu
+                </a>
+            </div>
+        </div>
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <i class="fas fa-chevron-down text-3xl text-amber-500"></i>
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section id="menu" class="py-20 bg-stone-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="font-display text-5xl font-bold text-amber-500 mb-4">A Nossa Carta</h2>
+                <div class="w-24 h-1 bg-amber-500 mx-auto"></div>
+                <p class="mt-4 text-stone-400">Sabores autênticos, ingredientes frescos, paixão em cada prato</p>
+            </div>
+
+            <!-- Menu Categories -->
+            <div class="grid md:grid-cols-2 gap-12">
+                <!-- Entradas -->
+                <div class="bg-stone-800 rounded-2xl p-8 shadow-2xl border border-stone-700">
+                    <div class="flex items-center mb-6">
+                        <i class="fas fa-utensils text-amber-500 text-2xl mr-3"></i>
+                        <h3 class="font-display text-3xl font-bold text-white">Entradas</h3>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="menu-item flex justify-between items-start border-b border-stone-700 pb-4">
+                            <div>
+                                <h4 class="text-lg font-semibold text-amber-100">Carpaccio de Polvo</h4>
+                                <p class="text-sm text-stone-400 mt-1">Azeite de limão, pimentos grelhados, microgreens</p>
+                            </div>
+                            <span class="text-amber-500 font-bold text-lg">14€</span>
+                        </div>
+                        <div class="menu-item flex justify-between items-start border-b border-stone-700 pb-4">
+                            <div>
+                                <h4 class="text-lg font-semibold text-amber-100">Tábua de Queijos Nacionais</h4>
+                                <p class="text-sm text-stone-400 mt-1">Seleção de 5 queijos, compotas artesanais, mel</p>
+                            </div>
+                            <span class="text-amber-500 font-bold text-lg">16€</span>
+                        </div>
+                        <div class="menu-item flex justify-between items-start border-b border-stone-700 pb-4">
+                            <div>
+                                <h4 class="text-lg font-semibold text-amber-100">Amêijoas à Bulhão Pato</h4>
+                                <p class="text-sm text-stone-400 mt-1">Alho, coentros, azeite, vinho branco</p>
+                            </div>
+                            <span class="text-amber-500 font-bold text-lg">13€</span>
+                        </div>
+                        <div class="menu-item flex justify-between items-start">
+                            <div>
+                                <h4 class="text-lg font-semibold text-amber-100">Tartar de Atum</h4>
+                                <p class="text-sm text-stone-400 mt-1">Abacate, gergelim torrado, molho ponzu</p>
+                            </div>
+                            <span class="text-amber-500 font-bold text-lg">15€</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pratos Principais -->
+                <div class="bg-stone-800 rounded-2xl p-8 shadow-2xl border border-stone-700">
+                    <div class="flex items-center mb-6">
+                        <i class="fas fa-drumstick-bite text-amber-500 text-2xl mr-3"></i>
+                        <h3 class="font-display text-3xl font-bold text-white">Pratos Principais</h3>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="menu-item flex justify-between items-start border-b border-stone-700 pb-4">
+                            <div>
+                                <h4 class="text-lg font-semibold text-amber-100">Bacalhau à Brás de Luxo</h4>
+                                <p class="text-sm text-stone-400 mt-1">Ovo escalfado, batata palha caseira, azeite trufado</p>
+                            </div>
+                            <span class="text-amber-500 font-bold text-lg">22€</span>
+                        </div>
+                        <div class="menu-item flex justify-between items-start border-b border-stone-700 pb-4">
+                            <div>
+                                <h4 class="text-lg font-semibold text-amber-100">Entrecôte Maturada</h4>
+                                <p class="text-sm text-stone-400 mt-1">Batata gratinada, espargos, molho béarnaise</p>
+                            </div>
+                            <span class="text-amber-500 font-bold text-lg">28€</span>
+                        </div>
+                        <div class="menu-item flex justify-between items-start border-b border-stone-700 pb-4">
+                            <div>
+                                <h4 class="text-lg font-semibold text-amber-100">Risotto de Cogumelos</h4>
+                                <p class="text-sm text-stone-400 mt-1">Cogumelos silvestres, parmesão, truffle oil</p>
+                            </div>
+                            <span class="text-amber-500 font-bold text-lg">19€</span>
+                        </div>
+                        <div class="menu-item flex justify-between items-start">
+                            <div>
+                                <h4 class="text-lg font-semibold text-amber-100">Robalo Grelhado</h4>
+                                <p class="text-sm text-stone-400 mt-1">Legumes salteados, batata nova, molho de manteiga</p>
+                            </div>
+                            <span class="text-amber-500 font-bold text-lg">24€</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sobremesas -->
+                <div class="bg-stone-800 rounded-2xl p-8 shadow-2xl border border-stone-700">
+                    <div class="flex items-center mb-6">
+                        <i class="fas fa-ice-cream text-amber-500 text-2xl mr-3"></i>
+                        <h3 class="font-display text-3xl font-bold text-white">Sobremesas</h3>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="menu-item flex justify-between items-start border-b border-stone-700 pb-4">
+                            <div>
+                                <h4 class="text-lg font-semibold text-amber-100">Pastel de Nata Cremoso</h4>
+                                <p class="text-sm text-stone-400 mt-1">Canela, bola de gelado de baunilha</p>
+                            </div>
+                            <span class="text-amber-500 font-bold text-lg">6€</span>
+                        </div>
+                        <div class="menu-item flex justify-between items-start border-b border-stone-700 pb-4">
+                            <div>
+                                <h4 class="text-lg font-semibold text-amber-100">Mousse de Chocolate</h4>
+                                <p class="text-sm text-stone-400 mt-1">Chocolate negro 70%, flor de sal, azeite</p>
+                            </div>
+                            <span class="text-amber-500 font-bold text-lg">7€</span>
+                        </div>
+                        <div class="menu-item flex justify-between items-start">
+                            <div>
+                                <h4 class="text-lg font-semibold text-amber-100">Tarte Tatin</h4>
+                                <p class="text-sm text-stone-400 mt-1">Maçã reineta, massa folhada, caramelo salgado</p>
+                            </div>
+                            <span class="text-amber-500 font-bold text-lg">8€</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sugestão do Chef -->
+                <div class="bg-gradient-to-br from-amber-900 to-stone-800 rounded-2xl p-8 shadow-2xl border border-amber-700 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-amber-500 text-stone-900 px-4 py-1 text-sm font-bold rounded-bl-lg">ESPECIAL</div>
+                    <div class="flex items-center mb-6">
+                        <i class="fas fa-star text-amber-400 text-2xl mr-3"></i>
+                        <h3 class="font-display text-3xl font-bold text-white">Sugestão do Chef</h3>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="menu-item flex justify-between items-start border-b border-amber-800 pb-4">
+                            <div>
+                                <h4 class="text-lg font-semibold text-amber-100">Cataplana de Marisco</h4>
+                                <p class="text-sm text-stone-300 mt-1">Para 2 pessoas - Lavagante, sapateira, amêijoas, camarão</p>
+                            </div>
+                            <span class="text-amber-400 font-bold text-lg">65€</span>
+                        </div>
+                        <div class="menu-item flex justify-between items-start">
+                            <div>
+                                <h4 class="text-lg font-semibold text-amber-100">Posta Mirandesa</h4>
+                                <p class="text-sm text-stone-300 mt-1">Grelhada na brasa, batata a murro, grelos salteados</p>
+                            </div>
+                            <span class="text-amber-400 font-bold text-lg">32€</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Garrafeira Section -->
+    <section id="garrafeira" class="py-20 bg-stone-950">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="font-display text-5xl font-bold text-amber-500 mb-4">Garrafeira</h2>
+                <div class="w-24 h-1 bg-amber-500 mx-auto"></div>
+                <p class="mt-4 text-stone-400">Seleção cuidada dos melhores vinhos nacionais e internacionais</p>
+            </div>
+
+            <!-- Wine Filters -->
+            <div class="flex flex-wrap justify-center gap-4 mb-12">
+                <button onclick="filterWines('all')" class="wine-filter px-6 py-2 bg-amber-600 text-white rounded-full hover:bg-amber-700 transition active">Todos</button>
+                <button onclick="filterWines('tinto')" class="wine-filter px-6 py-2 bg-stone-800 text-stone-300 rounded-full hover:bg-stone-700 transition">Tintos</button>
+                <button onclick="filterWines('branco')" class="wine-filter px-6 py-2 bg-stone-800 text-stone-300 rounded-full hover:bg-stone-700 transition">Brancos</button>
+                <button onclick="filterWines('rose')" class="wine-filter px-6 py-2 bg-stone-800 text-stone-300 rounded-full hover:bg-stone-700 transition">Rosés</button>
+                <button onclick="filterWines('espumante')" class="wine-filter px-6 py-2 bg-stone-800 text-stone-300 rounded-full hover:bg-stone-700 transition">Espumantes</button>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="wineGrid">
+                <!-- Tintos -->
+                <div class="wine-card tinto bg-stone-900 rounded-xl p-6 border border-stone-800 hover:border-amber-600 transition group">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <span class="text-xs text-red-400 font-semibold tracking-wider">VINHO TINTO</span>
+                            <h3 class="font-display text-xl font-bold text-white mt-1">Pêra-Manca 2017</h3>
+                            <p class="text-sm text-stone-400">Alentejo</p>
+                        </div>
+                        <span class="text-2xl text-amber-500 font-bold">85€</span>
+                    </div>
+                    <p class="text-stone-400 text-sm mb-4">Castas: Alicante Bouschet, Aragonez. Notas de frutos negros, chocolate e especiarias.</p>
+                    <div class="flex items-center text-xs text-stone-500">
+                        <i class="fas fa-wine-bottle mr-2"></i>
+                        <span>750ml</span>
+                    </div>
+                </div>
+
+                <div class="wine-card tinto bg-stone-900 rounded-xl p-6 border border-stone-800 hover:border-amber-600 transition group">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <span class="text-xs text-red-400 font-semibold tracking-wider">VINHO TINTO</span>
+                            <h3 class="font-display text-xl font-bold text-white mt-1">Barca Velha 2008</h3>
+                            <p class="text-sm text-stone-400">Douro</p>
+                        </div>
+                        <span class="text-2xl text-amber-500 font-bold">450€</span>
+                    </div>
+                    <p class="text-stone-400 text-sm mb-4">O ícone português. Complexo, elegante, notas de violeta, ameixa e tabaco.</p>
+                    <div class="flex items-center text-xs text-stone-500">
+                        <i class="fas fa-wine-bottle mr-2"></i>
+                        <span>750ml</span>
+                    </div>
+                </div>
+
+                <div class="wine-card tinto bg-stone-900 rounded-xl p-6 border border-stone-800 hover:border-amber-600 transition group">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <span class="text-xs text-red-400 font-semibold tracking-wider">VINHO TINTO</span>
+                            <h3 class="font-display text-xl font-bold text-white mt-1">Vinha Grande 2020</h3>
+                            <p class="text-sm text-stone-400">Douro</p>
+                        </div>
+                        <span class="text-2xl text-amber-500 font-bold">28€</span>
+                    </div>
+                    <p class="text-stone-400 text-sm mb-4">Touriga Nacional, Touriga Franca. Frutado, equilibrado, taninos suaves.</p>
+                    <div class="flex items-center text-xs text-stone-500">
+                        <i class="fas fa-wine-bottle mr-2"></i>
+                        <span>750ml</span>
+                    </div>
+                </div>
+
+                <!-- Brancos -->
+                <div class="wine-card branco bg-stone-900 rounded-xl p-6 border border-stone-800 hover:border-amber-600 transition group">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <span class="text-xs text-yellow-400 font-semibold tracking-wider">VINHO BRANCO</span>
+                            <h3 class="font-display text-xl font-bold text-white mt-1">Esporão Reserva 2021</h3>
+                            <p class="text-sm text-stone-400">Alentejo</p>
+                        </div>
+                        <span class="text-2xl text-amber-500 font-bold">35€</span>
+                    </div>
+                    <p class="text-stone-400 text-sm mb-4">Antão Vaz, Arinto. Citrino, mineral, notas tropicais e boa acidez.</p>
+                    <div class="flex items-center text-xs text-stone-500">
+                        <i class="fas fa-wine-bottle mr-2"></i>
+                        <span>750ml</span>
+                    </div>
+                </div>
+
+                <div class="wine-card branco bg-stone-900 rounded-xl p-6 border border-stone-800 hover:border-amber-600 transition group">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <span class="text-xs text-yellow-400 font-semibold tracking-wider">VINHO BRANCO</span>
+                            <h3 class="font-display text-xl font-bold text-white mt-1">Marquês de Borba 2022</h3>
+                            <p class="text-sm text-stone-400">Alentejo</p>
+                        </div>
+                        <span class="text-2xl text-amber-500 font-bold">18€</span>
+                    </div>
+                    <p class="text-stone-400 text-sm mb-4">Fresco, frutado, ideal para acompanhar peixes e mariscos.</p>
+                    <div class="flex items-center text-xs text-stone-500">
+                        <i class="fas fa-wine-bottle mr-2"></i>
+                        <span>750ml</span>
+                    </div>
+                </div>
+
+                <!-- Rosés -->
+                <div class="wine-card rose bg-stone-900 rounded-xl p-6 border border-stone-800 hover:border-amber-600 transition group">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <span class="text-xs text-pink-400 font-semibold tracking-wider">VINHO ROSÉ</span>
+                            <h3 class="font-display text-xl font-bold text-white mt-1">Mateus Rosé Original</h3>
+                            <p class="text-sm text-stone-400">Vinho Verde</p>
+                        </div>
+                        <span class="text-2xl text-amber-500 font-bold">12€</span>
+                    </div>
+                    <p class="text-stone-400 text-sm mb-4">Frutado, leve, ligeiramente gasoso. Perfeito para dias quentes.</p>
+                    <div class="flex items-center text-xs text-stone-500">
+                        <i class="fas fa-wine-bottle mr-2"></i>
+                        <span>750ml</span>
+                    </div>
+                </div>
+
+                <!-- Espumantes -->
+                <div class="wine-card espumante bg-stone-900 rounded-xl p-6 border border-stone-800 hover:border-amber-600 transition group">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <span class="text-xs text-purple-400 font-semibold tracking-wider">ESPUMANTE</span>
+                            <h3 class="font-display text-xl font-bold text-white mt-1">Murganheira Velha</h3>
+                            <p class="text-sm text-stone-400">Távora-Varosa</p>
+                        </div>
+                        <span class="text-2xl text-amber-500 font-bold">45€</span>
+                    </div>
+                    <p class="text-stone-400 text-sm mb-4">Método clássico, 36 meses em cave. Bolha fina, complexo, elegante.</p>
+                    <div class="flex items-center text-xs text-stone-500">
+                        <i class="fas fa-wine-bottle mr-2"></i>
+                        <span>750ml</span>
+                    </div>
+                </div>
+
+                <div class="wine-card espumante bg-stone-900 rounded-xl p-6 border border-stone-800 hover:border-amber-600 transition group">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <span class="text-xs text-purple-400 font-semibold tracking-wider">ESPUMANTE</span>
+                            <h3 class="font-display text-xl font-bold text-white mt-1">Mateus Sparkling Brut</h3>
+                            <p class="text-sm text-stone-400">Bairrada</p>
+                        </div>
+                        <span class="text-2xl text-amber-500 font-bold">22€</span>
+                    </div>
+                    <p class="text-stone-400 text-sm mb-4">Fresco, cítrico, excelente como aperitivo ou para celebrações.</p>
+                    <div class="flex items-center text-xs text-stone-500">
+                        <i class="fas fa-wine-bottle mr-2"></i>
+                        <span>750ml</span>
+                    </div>
+                </div>
+
+                <!-- Champanhe -->
+                <div class="wine-card espumante bg-stone-900 rounded-xl p-6 border border-stone-800 hover:border-amber-600 transition group">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <span class="text-xs text-purple-400 font-semibold tracking-wider">CHAMPANHE</span>
+                            <h3 class="font-display text-xl font-bold text-white mt-1">Moët & Chandon Impérial</h3>
+                            <p class="text-sm text-stone-400">Champagne, França</p>
+                        </div>
+                        <span class="text-2xl text-amber-500 font-bold">95€</span>
+                    </div>
+                    <p class="text-stone-400 text-sm mb-4">Brut, elegante, notas de maçã verde e flores brancas.</p>
+                    <div class="flex items-center text-xs text-stone-500">
+                        <i class="fas fa-wine-bottle mr-2"></i>
+                        <span>750ml</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reservas Section -->
+    <section id="reservas" class="py-20 bg-stone-900 relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10" style="background-image: url('https://www.transparenttextures.com/patterns/food.png');"></div>
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-12">
+                <h2 class="font-display text-5xl font-bold text-amber-500 mb-4">Reservas</h2>
+                <div class="w-24 h-1 bg-amber-500 mx-auto"></div>
+                <p class="mt-4 text-stone-400">Reserve a sua mesa na sala principal do Don Tasko</p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12">
+                <!-- Formulário de Reserva -->
+                <div class="bg-stone-800 rounded-2xl p-8 shadow-2xl border border-stone-700">
+                    <h3 class="font-display text-2xl font-bold text-white mb-6 flex items-center">
+                        <i class="fas fa-calendar-check text-amber-500 mr-3"></i>
+                        Nova Reserva
+                    </h3>
+                    
+                    <form id="reservaForm" class="space-y-6">
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-stone-400 mb-2">Nome</label>
+                                <input type="text" id="nome" required class="w-full px-4 py-3 bg-stone-900 border border-stone-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent text-white placeholder-stone-500" placeholder="Seu nome">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-stone-400 mb-2">Telefone</label>
+                                <input type="tel" id="telefone" required class="w-full px-4 py-3 bg-stone-900 border border-stone-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent text-white placeholder-stone-500" placeholder="912345678">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-stone-400 mb-2">Email</label>
+                            <input type="email" id="email" required class="w-full px-4 py-3 bg-stone-900 border border-stone-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent text-white placeholder-stone-500" placeholder="email@exemplo.com">
+                        </div>
+
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-stone-400 mb-2">Data</label>
+                                <input type="date" id="dataReserva" required class="w-full px-4 py-3 bg-stone-900 border border-stone-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent text-white" onchange="loadAvailableSlots()">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-stone-400 mb-2">Pessoas</label>
+                                <select id="pessoas" required class="w-full px-4 py-3 bg-stone-900 border border-stone-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent text-white">
+                                    <option value="1">1 pessoa</option>
+                                    <option value="2" selected>2 pessoas</option>
+                                    <option value="3">3 pessoas</option>
+                                    <option value="4">4 pessoas</option>
+                                    <option value="5">5 pessoas</option>
+                                    <option value="6">6 pessoas</option>
+                                    <option value="7">7 pessoas</option>
+                                    <option value="8">8+ pessoas</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-stone-400 mb-2">Refeição</label>
+                                <select id="refeicao" required class="w-full px-4 py-3 bg-stone-900 border border-stone-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent text-white" onchange="loadAvailableSlots()">
+                                    <option value="almoco">Almoço</option>
+                                    <option value="jantar">Jantar</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Seleção de Horário -->
+                        <div>
+                            <label class="block text-sm font-medium text-stone-400 mb-3">Horário Disponível</label>
+                            <div id="timeSlots" class="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                                <div class="col-span-full text-center py-4 text-stone-500">
+                                    <i class="fas fa-clock mb-2 text-2xl"></i>
+                                    <p>Selecione uma data e refeição para ver horários</p>
+                                </div>
+                            </div>
+                            <input type="hidden" id="horarioSelecionado" required>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-stone-400 mb-2">Observações</label>
+                            <textarea id="observacoes" rows="3" class="w-full px-4 py-3 bg-stone-900 border border-stone-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent text-white placeholder-stone-500" placeholder="Alergias, ocasião especial, preferência de mesa..."></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full py-4 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-lg transition transform hover:scale-[1.02] shadow-lg flex items-center justify-center">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            Confirmar Reserva
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Informações e Próximas Reservas -->
+                <div class="space-y-6">
+                    <div class="bg-stone-800 rounded-2xl p-8 shadow-2xl border border-stone-700">
+                        <h3 class="font-display text-2xl font-bold text-white mb-6 flex items-center">
+                            <i class="fas fa-info-circle text-amber-500 mr-3"></i>
+                            Informações
+                        </h3>
+                        <div class="space-y-4 text-stone-300">
+                            <div class="flex items-start">
+                                <i class="fas fa-map-marker-alt text-amber-500 mt-1 mr-3"></i>
+                                <div>
+                                    <p class="font-semibold">Morada</p>
+                                    <p class="text-sm">Rua dos Restauradores 42, 1250-188 Lisboa</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <i class="fas fa-phone text-amber-500 mt-1 mr-3"></i>
+                                <div>
+                                    <p class="font-semibold">Contacto</p>
+                                    <p class="text-sm">+351 213 456 789</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <i class="fas fa-envelope text-amber-500 mt-1 mr-3"></i>
+                                <div>
+                                    <p class="font-semibold">Email</p>
+                                    <p class="text-sm">reservas@dontasko.pt</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <i class="fas fa-clock text-amber-500 mt-1 mr-3"></i>
+                                <div>
+                                    <p class="font-semibold">Horário</p>
+                                    <p class="text-sm">Ter-Dom: 12h30-15h00 | 19h30-23h00</p>
+                                    <p class="text-xs text-stone-500 mt-1">Segunda: Fechado</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Próximas Reservas (Integração Google Calendar) -->
+                    <div class="bg-stone-800 rounded-2xl p-8 shadow-2xl border border-stone-700">
+                        <h3 class="font-display text-2xl font-bold text-white mb-6 flex items-center">
+                            <i class="fas fa-calendar-alt text-amber-500 mr-3"></i>
+                            Próximas Reservas
+                        </h3>
+                        <div id="upcomingReservations" class="space-y-3 max-h-64 overflow-y-auto">
+                            <div class="flex items-center justify-center py-8 text-stone-500">
+                                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500 mr-3"></div>
+                                <span>A carregar...</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-stone-700 text-xs text-stone-500 text-center">
+                            Sincronizado com Google Calendar
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Admin Section -->
+    <section id="admin" class="py-20 bg-stone-950 min-h-screen">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="font-display text-5xl font-bold text-amber-500 mb-4">Área Administrativa</h2>
+                <div class="w-24 h-1 bg-amber-500 mx-auto"></div>
+            </div>
+
+            <!-- Login Form -->
+            <div id="adminLogin" class="max-w-md mx-auto bg-stone-800 rounded-2xl p-8 shadow-2xl border border-stone-700">
+                <div class="text-center mb-6">
+                    <i class="fas fa-lock text-4xl text-amber-500 mb-4"></i>
+                    <h3 class="text-2xl font-bold text-white">Login Administrador</h3>
+                </div>
+                <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-stone-400 mb-2">Utilizador</label>
+                        <input type="text" id="adminUser" required class="w-full px-4 py-3 bg-stone-900 border border-stone-600 rounded-lg focus:ring-2 focus:ring-amber-500 text-white" placeholder="admin">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-stone-400 mb-2">Palavra-passe</label>
+                        <input type="password" id="adminPass" required class="w-full px-4 py-3 bg-stone-900 border border-stone-600 rounded-lg focus:ring-2 focus:ring-amber-500 text-white" placeholder="••••••">
+                    </div>
+                    <button type="submit" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-lg transition">
+                        Entrar
+                    </button>
+                    <p class="text-xs text-stone-500 text-center mt-4">Credenciais demo: admin / admin123</p>
+                </form>
+            </div>
+
+            <!-- Admin Dashboard (Hidden by default) -->
+            <div id="adminDashboard" class="hidden space-y-8">
+                <!-- Tabs -->
+                <div class="flex flex-wrap gap-2 border-b border-stone-700 pb-4">
+                    <button onclick="showAdminTab('dashboard')" class="admin-tab px-6 py-2 bg-amber-600 text-white rounded-lg font-medium transition" data-tab="dashboard">
+                        <i class="fas fa-chart-line mr-2"></i>Dashboard
+                    </button>
+                    <button onclick="showAdminTab('config')" class="admin-tab px-6 py-2 bg-stone-800 text-stone-300 rounded-lg font-medium hover:bg-stone-700 transition" data-tab="config">
+                        <i class="fas fa-cog mr-2"></i>Configurações
+                    </button>
+                    <button onclick="showAdminTab('reservas')" class="admin-tab px-6 py-2 bg-stone-800 text-stone-300 rounded-lg font-medium hover:bg-stone-700 transition" data-tab="reservas">
+                        <i class="fas fa-list mr-2"></i>Gerir Reservas
+                    </button>
+                    <button onclick="logoutAdmin()" class="ml-auto px-6 py-2 bg-red-900 text-red-200 rounded-lg font-medium hover:bg-red-800 transition">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Sair
+                    </button>
+                </div>
+
+                <!-- Dashboard Tab -->
+                <div id="tab-dashboard" class="admin-content">
+                    <div class="grid md:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-stone-800 rounded-xl p-6 border border-stone-700">
+                            <div class="flex items-center justify-between mb-4">
+                                <h4 class="text-stone-400 text-sm font-medium">Reservas Hoje</h4>
+                                <i class="fas fa-calendar-day text-amber-500 text-xl"></i>
+                            </div>
+                            <p class="text-3xl font-bold text-white" id="dashTodayCount">0</p>
+                            <p class="text-xs text-green-400 mt-2"><i class="fas fa-arrow-up mr-1"></i>vs ontem</p>
+                        </div>
+                        <div class="bg-stone-800 rounded-xl p-6 border border-stone-700">
+                            <div class="flex items-center justify-between mb-4">
+                                <h4 class="text-stone-400 text-sm font-medium">Ocupação</h4>
+                                <i class="fas fa-percentage text-amber-500 text-xl"></i>
+                            </div>
+                            <p class="text-3xl font-bold text-white" id="dashOccupancy">0%</p>
+                            <div class="w-full bg-stone-700 rounded-full h-2 mt-2">
+                                <div class="bg-amber-500 h-2 rounded-full" id="dashOccupancyBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="bg-stone-800 rounded-xl p-6 border border-stone-700">
+                            <div class="flex items-center justify-between mb-4">
+                                <h4 class="text-stone-400 text-sm font-medium">Total Clientes</h4>
+                                <i class="fas fa-users text-amber-500 text-xl"></i>
+                            </div>
+                            <p class="text-3xl font-bold text-white" id="dashTotalGuests">0</p>
+                        </div>
+                        <div class="bg-stone-800 rounded-xl p-6 border border-stone-700">
+                            <div class="flex items-center justify-between mb-4">
+                                <h4 class="text-stone-400 text-sm font-medium">Estado</h4>
+                                <i class="fas fa-circle text-green-500 text-xl"></i>
+                            </div>
+                            <p class="text-lg font-bold text-white">Aberto</p>
+                            <p class="text-xs text-stone-500 mt-1" id="dashNextMeal">Próximo: Jantar</p>
+                        </div>
+                    </div>
+
+                    <!-- Ocupação Diária Visual -->
+                    <div class="bg-stone-800 rounded-xl p-6 border border-stone-700 mb-8">
+                        <h3 class="font-display text-xl font-bold text-white mb-6">Ocupação dos Próximos 7 Dias</h3>
+                        <div class="grid grid-cols-7 gap-4" id="weeklyOccupancy">
+                            <!-- Gerado via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Lista de Reservas de Hoje -->
+                    <div class="bg-stone-800 rounded-xl p-6 border border-stone-700">
+                        <h3 class="font-display text-xl font-bold text-white mb-6">Reservas de Hoje</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left">
+                                <thead>
+                                    <tr class="border-b border-stone-700 text-stone-400 text-sm">
+                                        <th class="pb-3">Horário</th>
+                                        <th class="pb-3">Nome</th>
+                                        <th class="pb-3">Pessoas</th>
+                                        <th class="pb-3">Contacto</th>
+                                        <th class="pb-3">Estado</th>
+                                        <th class="pb-3">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="todayReservationsTable" class="text-sm">
+                                    <!-- Gerado via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Config Tab -->
+                <div id="tab-config" class="admin-content hidden">
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <!-- Dias de Funcionamento -->
+                        <div class="bg-stone-800 rounded-xl p-6 border border-stone-700">
+                            <h3 class="font-display text-xl font-bold text-white mb-6 flex items-center">
+                                <i class="fas fa-calendar-week text-amber-500 mr-3"></i>
+                                Dias de Funcionamento
+                            </h3>
+                            <div class="space-y-3" id="operatingDays">
+                                <!-- Gerado via JS -->
+                            </div>
+                        </div>
+
+                        <!-- Horários das Refeições -->
+                        <div class="bg-stone-800 rounded-xl p-6 border border-stone-700">
+                            <h3 class="font-display text-xl font-bold text-white mb-6 flex items-center">
+                                <i class="fas fa-clock text-amber-500 mr-3"></i>
+                                Horários das Refeições
+                            </h3>
+                            
+                            <div class="mb-6">
+                                <h4 class="text-amber-400 font-semibold mb-3">Almoço</h4>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs text-stone-400 mb-1">Início</label>
+                                        <input type="time" id="almocoInicio" class="w-full px-3 py-2 bg-stone-900 border border-stone-600 rounded text-white" value="12:30">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-stone-400 mb-1">Fim</label>
+                                        <input type="time" id="almocoFim" class="w-full px-3 py-2 bg-stone-900 border border-stone-600 rounded text-white" value="15:00">
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <label class="block text-xs text-stone-400 mb-1">Intervalo entre reservas (min)</label>
+                                    <select id="almocoIntervalo" class="w-full px-3 py-2 bg-stone-900 border border-stone-600 rounded text-white">
+                                        <option value="15">15 minutos</option>
+                                        <option value="30" selected>30 minutos</option>
+                                        <option value="60">1 hora</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 class="text-amber-400 font-semibold mb-3">Jantar</h4>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs text-stone-400 mb-1">Início</label>
+                                        <input type="time" id="jantarInicio" class="w-full px-3 py-2 bg-stone-900 border border-stone-600 rounded text-white" value="19:30">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-stone-400 mb-1">Fim</label>
+                                        <input type="time" id="jantarFim" class="w-full px-3 py-2 bg-stone-900 border border-stone-600 rounded text-white" value="23:00">
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <label class="block text-xs text-stone-400 mb-1">Intervalo entre reservas (min)</label>
+                                    <select id="jantarIntervalo" class="w-full px-3 py-2 bg-stone-900 border border-stone-600 rounded text-white">
+                                        <option value="15">15 minutos</option>
+                                        <option value="30" selected>30 minutos</option>
+                                        <option value="60">1 hora</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <button onclick="saveConfig()" class="mt-6 w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-lg transition">
+                                <i class="fas fa-save mr-2"></i>Guardar Configurações
+                            </button>
+                        </div>
+
+                        <!-- Capacidade -->
+                        <div class="bg-stone-800 rounded-xl p-6 border border-stone-700 md:col-span-2">
+                            <h3 class="font-display text-xl font-bold text-white mb-6 flex items-center">
+                                <i class="fas fa-chair text-amber-500 mr-3"></i>
+                                Capacidade da Sala
+                            </h3>
+                            <div class="grid md:grid-cols-3 gap-6">
+                                <div>
+                                    <label class="block text-sm text-stone-400 mb-2">Total de Lugares</label>
+                                    <input type="number" id="totalSeats" class="w-full px-4 py-3 bg-stone-900 border border-stone-600 rounded-lg text-white" value="40" min="1">
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-stone-400 mb-2">Mesas para 2</label>
+                                    <input type="number" id="tables2" class="w-full px-4 py-3 bg-stone-900 border border-stone-600 rounded-lg text-white" value="8" min="0">
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-stone-400 mb-2">Mesas para 4+</label>
+                                    <input type="number" id="tables4" class="w-full px-4 py-3 bg-stone-900 border border-stone-600 rounded-lg text-white" value="6" min="0">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reservas Tab -->
+                <div id="tab-reservas" class="admin-content hidden">
+                    <div class="bg-stone-800 rounded-xl p-6 border border-stone-700">
+                        <div class="flex flex-wrap gap-4 mb-6 items-end">
+                            <div>
+                                <label class="block text-sm text-stone-400 mb-2">Filtrar por Data</label>
+                                <input type="date" id="filterDate" class="px-4 py-2 bg-stone-900 border border-stone-600 rounded-lg text-white" onchange="loadAdminReservations()">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-stone-400 mb-2">Refeição</label>
+                                <select id="filterMeal" class="px-4 py-2 bg-stone-900 border border-stone-600 rounded-lg text-white" onchange="loadAdminReservations()">
+                                    <option value="all">Todas</option>
+                                    <option value="almoco">Almoço</option>
+                                    <option value="jantar">Jantar</option>
+                                </select>
+                            </div>
+                            <button onclick="loadAdminReservations()" class="px-6 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition">
+                                <i class="fas fa-sync-alt mr-2"></i>Atualizar
+                            </button>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left">
+                                <thead>
+                                    <tr class="border-b border-stone-700 text-stone-400">
+                                        <th class="pb-3">Data</th>
+                                        <th class="pb-3">Horário</th>
+                                        <th class="pb-3">Nome</th>
+                                        <th class="pb-3">Pessoas</th>
+                                        <th class="pb-3">Refeição</th>
+                                        <th class="pb-3">Contacto</th>
+                                        <th class="pb-3">Estado</th>
+                                        <th class="pb-3">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="allReservationsTable" class="text-sm">
+                                    <!-- Gerado via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-stone-950 border-t border-stone-800 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="font-display text-2xl font-bold text-amber-500 mb-4">DON TASKO</h3>
+                    <p class="text-stone-400 text-sm">Culinária de autor num ambiente sofisticado e acolhedor. Cada prato conta uma história.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-white mb-4">Links Rápidos</h4>
+                    <ul class="space-y-2 text-sm text-stone-400">
+                        <li><a href="#home" class="hover:text-amber-500 transition">Início</a></li>
+                        <li><a href="#menu" class="hover:text-amber-500 transition">Menu</a></li>
+                        <li><a href="#garrafeira" class="hover:text-amber-500 transition">Garrafeira</a></li>
+                        <li><a href="#reservas" class="hover:text-amber-500 transition">Reservas</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-white mb-4">Contacto</h4>
+                    <ul class="space-y-2 text-sm text-stone-400">
+                        <li><i class="fas fa-map-marker-alt mr-2 text-amber-500"></i>Rua dos Restauradores 42, Lisboa</li>
+                        <li><i class="fas fa-phone mr-2 text-amber-500"></i>+351 213 456 789</li>
+                        <li><i class="fas fa-envelope mr-2 text-amber-500"></i>geral@dontasko.pt</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-white mb-4">Horário</h4>
+                    <ul class="space-y-2 text-sm text-stone-400">
+                        <li>Terça a Domingo</li>
+                        <li>Almoço: 12h30 - 15h00</li>
+                        <li>Jantar: 19h30 - 23h00</li>
+                        <li class="text-amber-500">Segunda: Fechado</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-stone-800 mt-8 pt-8 text-center text-stone-500 text-sm">
+                <p>&copy; 2024 Don Tasko. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal de Confirmação -->
+    <div id="confirmationModal" class="fixed inset-0 bg-black bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-stone-800 rounded-2xl p-8 max-w-md w-full border border-amber-500 shadow-2xl transform scale-95 transition-transform" id="modalContent">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-check text-2xl text-green-400"></i>
+                </div>
+                <h3 class="font-display text-2xl font-bold text-white mb-2">Reserva Confirmada!</h3>
+                <p class="text-stone-400 mb-6">A sua reserva foi registada com sucesso. Enviamos uma confirmação para o seu email.</p>
+                <div class="bg-stone-900 rounded-lg p-4 mb-6 text-left text-sm">
+                    <p class="text-stone-400">Detalhes:</p>
+                    <p class="text-white font-semibold mt-1" id="modalDetails"></p>
+                </div>
+                <button onclick="closeModal()" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-lg transition">
+                    Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configurações Globais
+        const CONFIG = {
+            googleCalendarId: 'dontasko.geral@gmail.com',
+            clientId: '764385650524-uahcbeehg299tk79rgcrl1q31jmtrkhl.apps.googleusercontent.com',
+            apiKey: 'AIzaSyDXEHeN6zu7I-83-L83UNn00QrhCzrijaw',
+            scopes: 'https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar.events',
+            maxReservationsPerSlot: 4
+        };
+
+        // Estado da Aplicação
+        let appState = {
+            reservations: JSON.parse(localStorage.getItem('donTasko_reservations')) || [],
+            config: JSON.parse(localStorage.getItem('donTasko_config')) || {
+                operatingDays: [0, 2, 3, 4, 5, 6], // 0=Dom, 1=Seg(fechado), etc
+                almoco: { inicio: '12:30', fim: '15:00', intervalo: 30 },
+                jantar: { inicio: '19:30', fim: '23:00', intervalo: 30 },
+                capacidade: { total: 40, mesas2: 8, mesas4: 6 }
+            },
+            isAdmin: false,
+            googleAuth: null,
+            googleEvents: []
+        };
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeDates();
+            loadAvailableSlots();
+            loadUpcomingReservations();
+            renderOperatingDays();
+            updateConfigUI();
+            
+            // Definir data mínima como hoje
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('dataReserva').min = today;
+            document.getElementById('filterDate').value = today;
+        });
+
+        // Navegação Mobile
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Filtro de Vinhos
+        function filterWines(type) {
+            const cards = document.querySelectorAll('.wine-card');
+            const buttons = document.querySelectorAll('.wine-filter');
+            
+            buttons.forEach(btn => {
+                if (btn.textContent.toLowerCase().includes(type) || (type === 'all' && btn.textContent === 'Todos')) {
+                    btn.classList.remove('bg-stone-800', 'text-stone-300');
+                    btn.classList.add('bg-amber-600', 'text-white');
+                } else {
+                    btn.classList.add('bg-stone-800', 'text-stone-300');
+                    btn.classList.remove('bg-amber-600', 'text-white');
+                }
+            });
+
+            cards.forEach(card => {
+                if (type === 'all' || card.classList.contains(type)) {
+                    card.style.display = 'block';
+                    setTimeout(() => card.style.opacity = '1', 10);
+                } else {
+                    card.style.opacity = '0';
+                    setTimeout(() => card.style.display = 'none', 300);
+                }
+            });
+        }
+
+        // Sistema de Reservas
+        function initializeDates() {
+            const dateInput = document.getElementById('dataReserva');
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            dateInput.min = today.toISOString().split('T')[0];
+            
+            // Definir data padrão para o próximo dia útil
+            let nextDay = new Date(today);
+            nextDay.setDate(nextDay.getDate() + 1);
+            while (!isOperatingDay(nextDay)) {
+                nextDay.setDate(nextDay.getDate() + 1);
+            }
+            dateInput.value = nextDay.toISOString().split('T')[0];
+        }
+
+        function isOperatingDay(date) {
+            const day = date.getDay();
+            return appState.config.operatingDays.includes(day);
+        }
+
+        function generateTimeSlots(meal) {
+            const config = appState.config[meal];
+            const slots = [];
+            let current = new Date(`2000-01-01T${config.inicio}`);
+            const end = new Date(`2000-01-01T${config.fim}`);
+            
+            while (current < end) {
+                slots.push(current.toTimeString().slice(0, 5));
+                current.setMinutes(current.getMinutes() + config.intervalo);
+            }
+            
+            return slots;
+        }
+
+        function loadAvailableSlots() {
+            const data = document.getElementById('dataReserva').value;
+            const refeicao = document.getElementById('refeicao').value;
+            const container = document.getElementById('timeSlots');
+            
+            if (!data) {
+                container.innerHTML = '<div class="col-span-full text-center py-4 text-stone-500">Selecione uma data</div>';
+                return;
+            }
+
+            const selectedDate = new Date(data);
+            if (!isOperatingDay(selectedDate)) {
+                container.innerHTML = '<div class="col-span-full text-center py-4 text-red-400"><i class="fas fa-store-slash mr-2"></i>Restaurante fechado neste dia</div>';
+                return;
+            }
+
+            const slots = generateTimeSlots(refeicao);
+            const existingReservations = appState.reservations.filter(r => r.data === data && r.refeicao === refeicao);
+            
+            container.innerHTML = slots.map(slot => {
+                const count = existingReservations.filter(r => r.horario === slot).length;
+                const isFull = count >= CONFIG.maxReservationsPerSlot;
+                const isSelected = document.getElementById('horarioSelecionado').value === slot;
+                
+                return `
+                    <button type="button" 
+                            onclick="selectTimeSlot('${slot}', this)" 
+                            class="py-3 px-2 rounded-lg text-sm font-medium transition transform hover:scale-105 ${isFull ? 'slot-occupied cursor-not-allowed opacity-50' : isSelected ? 'slot-selected' : 'slot-available'} text-white"
+                            ${isFull ? 'disabled' : ''}>
+                        ${slot}
+                        ${isFull ? '<br><span class="text-xs">Lotado</span>' : `<br><span class="text-xs opacity-75">${count}/${CONFIG.maxReservationsPerSlot}</span>`}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function selectTimeSlot(slot, btn) {
+            document.getElementById('horarioSelecionado').value = slot;
+            
+            // Atualizar visual
+            document.querySelectorAll('#timeSlots button').forEach(b => {
+                if (!b.disabled) {
+                    b.classList.remove('slot-selected');
+                    b.classList.add('slot-available');
+                }
+            });
+            btn.classList.remove('slot-available');
+            btn.classList.add('slot-selected');
+        }
+
+        // Formulário de Reserva
+        document.getElementById('reservaForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const horario = document.getElementById('horarioSelecionado').value;
+            if (!horario) {
+                alert('Por favor selecione um horário');
+                return;
+            }
+
+            const reserva = {
+                id: Date.now(),
+                nome: document.getElementById('nome').value,
+                telefone: document.getElementById('telefone').value,
+                email: document.getElementById('email').value,
+                data: document.getElementById('dataReserva').value,
+                refeicao: document.getElementById('refeicao').value,
+                horario: horario,
+                pessoas: parseInt(document.getElementById('pessoas').value),
+                observacoes: document.getElementById('observacoes').value,
+                estado: 'confirmada',
+                createdAt: new Date().toISOString()
+            };
+
+            // Verificar disponibilidade novamente
+            const existing = appState.reservations.filter(r => 
+                r.data === reserva.data && 
+                r.refeicao === reserva.refeicao && 
+                r.horario === reserva.horario
+            );
+            
+            if (existing.length >= CONFIG.maxReservationsPerSlot) {
+                alert('Este horário acabou de ficar lotado. Por favor selecione outro.');
+                loadAvailableSlots();
+                return;
+            }
+
+            // Salvar reserva
+            appState.reservations.push(reserva);
+            localStorage.setItem('donTasko_reservations', JSON.stringify(appState.reservations));
+            
+            // Tentar sincronizar com Google Calendar (se autenticado)
+            try {
+                await syncWithGoogleCalendar(reserva);
+            } catch (error) {
+                console.log('Sync com Google Calendar falhou:', error);
+            }
+
+            // Mostrar confirmação
+            document.getElementById('modalDetails').innerHTML = `
+                <strong>${reserva.nome}</strong><br>
+                ${reserva.data} às ${reserva.horario}<br>
+                ${reserva.pessoas} pessoa(s) - ${reserva.refeicao === 'almoco' ? 'Almoço' : 'Jantar'}
+            `;
+            document.getElementById('confirmationModal').classList.remove('hidden');
+            
+            // Reset form
+            e.target.reset();
+            document.getElementById('horarioSelecionado').value = '';
+            initializeDates();
+            loadAvailableSlots();
+            loadUpcomingReservations();
+        });
+
+        function closeModal() {
+            document.getElementById('confirmationModal').classList.add('hidden');
+        }
+
+        // Google Calendar Integration
+        async function syncWithGoogleCalendar(reserva) {
+            // Nota: Devido às restrições de OAuth, esta é uma simulação
+            // Em produção, você precisaria implementar o fluxo OAuth2 completo
+            console.log('Sincronizando com Google Calendar:', reserva);
+            
+            // Aqui você implementaria a chamada real à API do Google Calendar
+            // usando o token OAuth obtido após autenticação
+        }
+
+        function loadUpcomingReservations() {
+            const container = document.getElementById('upcomingReservations');
+            const upcoming = appState.reservations
+                .filter(r => new Date(r.data) >= new Date().setHours(0,0,0,0))
+                .sort((a, b) => new Date(a.data + 'T' + a.horario) - new Date(b.data + 'T' + b.horario))
+                .slice(0, 5);
+
+            if (upcoming.length === 0) {
+                container.innerHTML = '<div class="text-center py-4 text-stone-500">Nenhuma reserva próxima</div>';
+                return;
+            }
+
+            container.innerHTML = upcoming.map(r => `
+                <div class="flex items-center justify-between bg-stone-900 rounded-lg p-3 border border-stone-700">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 rounded-full bg-amber-900 flex items-center justify-center mr-3">
+                            <span class="text-amber-400 font-bold text-sm">${r.data.split('-')[2]}/${r.data.split('-')[1]}</span>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-white text-sm">${r.nome}</p>
+                            <p class="text-xs text-stone-400">${r.horario} • ${r.pessoas} pessoas</p>
+                        </div>
+                    </div>
+                    <span class="px-2 py-1 rounded text-xs ${r.refeicao === 'almoco' ? 'bg-yellow-900 text-yellow-400' : 'bg-purple-900 text-purple-400'}">
+                        ${r.refeicao === 'almoco' ? 'Almoço' : 'Jantar'}
+                    </span>
+                </div>
+            `).join('');
+        }
+
+        // Admin Functions
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const user = document.getElementById('adminUser').value;
+            const pass = document.getElementById('adminPass').value;
+            
+            // Demo credentials - em produção, usar autenticação segura
+            if (user === 'admin' && pass === 'admin123') {
+                appState.isAdmin = true;
+                document.getElementById('adminLogin').classList.add('hidden');
+                document.getElementById('adminDashboard').classList.remove('hidden');
+                loadDashboard();
+            } else {
+                alert('Credenciais inválidas');
+            }
+        }
+
+        function logoutAdmin() {
+            appState.isAdmin = false;
+            document.getElementById('adminDashboard').classList.add('hidden');
+            document.getElementById('adminLogin').classList.remove('hidden');
+            document.getElementById('adminUser').value = '';
+            document.getElementById('adminPass').value = '';
+        }
+
+        function showAdminTab(tab) {
+            // Hide all contents
+            document.querySelectorAll('.admin-content').forEach(c => c.classList.add('hidden'));
+            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+            
+            // Update buttons
+            document.querySelectorAll('.admin-tab').forEach(b => {
+                if (b.dataset.tab === tab) {
+                    b.classList.remove('bg-stone-800', 'text-stone-300');
+                    b.classList.add('bg-amber-600', 'text-white');
+                } else {
+                    b.classList.add('bg-stone-800', 'text-stone-300');
+                    b.classList.remove('bg-amber-600', 'text-white');
+                }
+            });
+
+            if (tab === 'dashboard') loadDashboard();
+            if (tab === 'reservas') loadAdminReservations();
+        }
+
+        function loadDashboard() {
+            const today = new Date().toISOString().split('T')[0];
+            const todayReservations = appState.reservations.filter(r => r.data === today);
+            
+            // Estatísticas
+            document.getElementById('dashTodayCount').textContent = todayReservations.length;
+            document.getElementById('dashTotalGuests').textContent = todayReservations.reduce((sum, r) => sum + r.pessoas, 0);
+            
+            const occupancy = Math.min(100, (todayReservations.length / (CONFIG.maxReservationsPerSlot * 6)) * 100); // 6 slots por refeição
+            document.getElementById('dashOccupancy').textContent = Math.round(occupancy) + '%';
+            document.getElementById('dashOccupancyBar').style.width = occupancy + '%';
+
+            // Próxima refeição
+            const currentHour = new Date().getHours();
+            document.getElementById('dashNextMeal').textContent = currentHour < 15 ? 'Próximo: Jantar' : 'Próximo: Almoço (amanhã)';
+
+            // Tabela de hoje
+            const tbody = document.getElementById('todayReservationsTable');
+            if (todayReservations.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="py-4 text-center text-stone-500">Sem reservas para hoje</td></tr>';
+            } else {
+                tbody.innerHTML = todayReservations.sort((a, b) => a.horario.localeCompare(b.horario)).map(r => `
+                    <tr class="border-b border-stone-800">
+                        <td class="py-3 text-white">${r.horario}</td>
+                        <td class="py-3 text-white">${r.nome}</td>
+                        <td class="py-3 text-stone-400">${r.pessoas}</td>
+                        <td class="py-3 text-stone-400">${r.telefone}</td>
+                        <td class="py-3"><span class="px-2 py-1 rounded text-xs bg-green-900 text-green-400">${r.estado}</span></td>
+                        <td class="py-3">
+                            <button onclick="cancelReservation(${r.id})" class="text-red-400 hover:text-red-300 mr-2"><i class="fas fa-times"></i></button>
+                            <button onclick="confirmReservation(${r.id})" class="text-green-400 hover:text-green-300"><i class="fas fa-check"></i></button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            // Ocupação semanal
+            const weekContainer = document.getElementById('weeklyOccupancy');
+            const days = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+            let html = '';
+            
+            for (let i = 0; i < 7; i++) {
+                const d = new Date();
+                d.setDate(d.getDate() + i);
+                const dateStr = d.toISOString().split('T')[0];
+                const dayReservations = appState.reservations.filter(r => r.data === dateStr);
+                const totalSlots = 12; // 6 almoço + 6 jantar
+                const percentage = Math.round((dayReservations.length / totalSlots) * 100);
+                const isOpen = isOperatingDay(d);
+                
+                html += `
+                    <div class="text-center">
+                        <p class="text-xs text-stone-400 mb-2">${days[d.getDay()]}</p>
+                        <div class="relative h-32 bg-stone-900 rounded-lg overflow-hidden ${!isOpen ? 'opacity-50' : ''}">
+                            <div class="absolute bottom-0 w-full bg-amber-600 transition-all duration-500" style="height: ${isOpen ? percentage : 0}%"></div>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span class="text-lg font-bold text-white z-10">${isOpen ? percentage + '%' : 'F'}</span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-stone-500 mt-1">${dayReservations.length} res</p>
+                    </div>
+                `;
+            }
+            weekContainer.innerHTML = html;
+        }
+
+        function loadAdminReservations() {
+            const filterDate = document.getElementById('filterDate').value;
+            const filterMeal = document.getElementById('filterMeal').value;
+            
+            let filtered = appState.reservations;
+            if (filterDate) {
+                filtered = filtered.filter(r => r.data === filterDate);
+            }
+            if (filterMeal !== 'all') {
+                filtered = filtered.filter(r => r.refeicao === filterMeal);
+            }
+            
+            filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            
+            const tbody = document.getElementById('allReservationsTable');
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="py-4 text-center text-stone-500">Nenhuma reserva encontrada</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = filtered.map(r => `
+                <tr class="border-b border-stone-800">
+                    <td class="py-3 text-white">${r.data}</td>
+                    <td class="py-3 text-white">${r.horario}</td>
+                    <td class="py-3 text-white">${r.nome}</td>
+                    <td class="py-3 text-stone-400">${r.pessoas}</td>
+                    <td class="py-3"><span class="px-2 py-1 rounded text-xs ${r.refeicao === 'almoco' ? 'bg-yellow-900 text-yellow-400' : 'bg-purple-900 text-purple-400'}">${r.refeicao === 'almoco' ? 'Almoço' : 'Jantar'}</span></td>
+                    <td class="py-3 text-stone-400">${r.telefone}</td>
+                    <td class="py-3"><span class="px-2 py-1 rounded text-xs ${r.estado === 'confirmada' ? 'bg-green-900 text-green-400' : r.estado === 'cancelada' ? 'bg-red-900 text-red-400' : 'bg-yellow-900 text-yellow-400'}">${r.estado}</span></td>
+                    <td class="py-3">
+                        ${r.estado !== 'cancelada' ? `<button onclick="cancelReservation(${r.id})" class="text-red-400 hover:text-red-300 mr-2" title="Cancelar"><i class="fas fa-times"></i></button>` : ''}
+                        <button onclick="deleteReservation(${r.id})" class="text-stone-500 hover:text-stone-300" title="Eliminar"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function cancelReservation(id) {
+            if (!confirm('Tem certeza que deseja cancelar esta reserva?')) return;
+            
+            const idx = appState.reservations.findIndex(r => r.id === id);
+            if (idx > -1) {
+                appState.reservations[idx].estado = 'cancelada';
+                localStorage.setItem('donTasko_reservations', JSON.stringify(appState.reservations));
+                loadDashboard();
+                loadAdminReservations();
+                loadUpcomingReservations();
+            }
+        }
+
+        function deleteReservation(id) {
+            if (!confirm('Tem certeza que deseja eliminar permanentemente esta reserva?')) return;
+            
+            appState.reservations = appState.reservations.filter(r => r.id !== id);
+            localStorage.setItem('donTasko_reservations', JSON.stringify(appState.reservations));
+            loadAdminReservations();
+            loadDashboard();
+        }
+
+        // Configurações
+        function renderOperatingDays() {
+            const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+            const container = document.getElementById('operatingDays');
+            
+            container.innerHTML = days.map((day, idx) => `
+                <div class="flex items-center justify-between bg-stone-900 rounded-lg p-3">
+                    <span class="text-white">${day}</span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" class="sr-only peer" ${appState.config.operatingDays.includes(idx) ? 'checked' : ''} onchange="toggleOperatingDay(${idx})">
+                        <div class="w-11 h-6 bg-stone-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-600"></div>
+                    </label>
+                </div>
+            `).join('');
+        }
+
+        function toggleOperatingDay(day) {
+            const idx = appState.config.operatingDays.indexOf(day);
+            if (idx > -1) {
+                appState.config.operatingDays.splice(idx, 1);
+            } else {
+                appState.config.operatingDays.push(day);
+                appState.config.operatingDays.sort();
+            }
+            saveConfigToStorage();
+        }
+
+        function updateConfigUI() {
+            document.getElementById('almocoInicio').value = appState.config.almoco.inicio;
+            document.getElementById('almocoFim').value = appState.config.almoco.fim;
+            document.getElementById('almocoIntervalo').value = appState.config.almoco.intervalo;
+            document.getElementById('jantarInicio').value = appState.config.jantar.inicio;
+            document.getElementById('jantarFim').value = appState.config.jantar.fim;
+            document.getElementById('jantarIntervalo').value = appState.config.jantar.intervalo;
+            document.getElementById('totalSeats').value = appState.config.capacidade.total;
+            document.getElementById('tables2').value = appState.config.capacidade.mesas2;
+            document.getElementById('tables4').value = appState.config.capacidade.mesas4;
+        }
+
+        function saveConfig() {
+            appState.config.almoco = {
+                inicio: document.getElementById('almocoInicio').value,
+                fim: document.getElementById('almocoFim').value,
+                intervalo: parseInt(document.getElementById('almocoIntervalo').value)
+            };
+            appState.config.jantar = {
+                inicio: document.getElementById('jantarInicio').value,
+                fim: document.getElementById('jantarFim').value,
+                intervalo: parseInt(document.getElementById('jantarIntervalo').value)
+            };
+            appState.config.capacidade = {
+                total: parseInt(document.getElementById('totalSeats').value),
+                mesas2: parseInt(document.getElementById('tables2').value),
+                mesas4: parseInt(document.getElementById('tables4').value)
+            };
+            
+            saveConfigToStorage();
+            alert('Configurações guardadas com sucesso!');
+        }
+
+        function saveConfigToStorage() {
+            localStorage.setItem('donTasko_config', JSON.stringify(appState.config));
+        }
+
+        // Scroll suave para âncoras
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    // Fechar menu mobile se aberto
+                    document.getElementById('mobileMenu').classList.add('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
