@@ -487,7 +487,7 @@
                     </form>
                 </div>
 
-                <!-- Informações e Próximas Reservas -->
+                <!-- Informações e Disponibilidade (PÚBLICO - sem dados privados) -->
                 <div class="space-y-6">
                     <div class="bg-stone-800 rounded-2xl p-8 shadow-2xl border border-stone-700">
                         <h3 class="font-display text-2xl font-bold text-white mb-6 flex items-center">
@@ -527,20 +527,17 @@
                         </div>
                     </div>
 
-                    <!-- Próximas Reservas (Integração Google Calendar) -->
+                    <!-- Disponibilidade Pública (SEM NOMES DE CLIENTES) -->
                     <div class="bg-stone-800 rounded-2xl p-8 shadow-2xl border border-stone-700">
                         <h3 class="font-display text-2xl font-bold text-white mb-6 flex items-center">
-                            <i class="fas fa-calendar-alt text-amber-500 mr-3"></i>
-                            Próximas Reservas
+                            <i class="fas fa-chart-pie text-amber-500 mr-3"></i>
+                            Disponibilidade
                         </h3>
-                        <div id="upcomingReservations" class="space-y-3 max-h-64 overflow-y-auto">
-                            <div class="flex items-center justify-center py-8 text-stone-500">
-                                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500 mr-3"></div>
-                                <span>A carregar...</span>
-                            </div>
+                        <div id="publicAvailability" class="space-y-4">
+                            <!-- Mostra apenas estatísticas, não dados pessoais -->
                         </div>
                         <div class="mt-4 pt-4 border-t border-stone-700 text-xs text-stone-500 text-center">
-                            Sincronizado com Google Calendar
+                            Reserve o seu horário preferido
                         </div>
                     </div>
                 </div>
@@ -642,7 +639,7 @@
                         </div>
                     </div>
 
-                    <!-- Lista de Reservas de Hoje -->
+                    <!-- Lista de Reservas de Hoje (ADMIN ONLY - COM NOMES) -->
                     <div class="bg-stone-800 rounded-xl p-6 border border-stone-700">
                         <h3 class="font-display text-xl font-bold text-white mb-6">Reservas de Hoje</h3>
                         <div class="overflow-x-auto">
@@ -759,7 +756,7 @@
                     </div>
                 </div>
 
-                <!-- Reservas Tab -->
+                <!-- Reservas Tab (ADMIN ONLY - COM NOMES) -->
                 <div id="tab-reservas" class="admin-content hidden">
                     <div class="bg-stone-800 rounded-xl p-6 border border-stone-700">
                         <div class="flex flex-wrap gap-4 mb-6 items-end">
@@ -884,7 +881,7 @@
         // Estado da Aplicação
         let appState = {
             reservations: [],
-            config: null, // Será carregado do localStorage ou usará DEFAULT_CONFIG
+            config: null,
             isAdmin: false
         };
 
@@ -900,9 +897,9 @@
             
             // Inicializar UI
             initializeDates();
-            updatePublicInfo(); // Atualizar informações públicas com base na config
+            updatePublicInfo();
             loadAvailableSlots();
-            loadUpcomingReservations();
+            loadPublicAvailability(); // NOVO: Carrega disponibilidade pública (sem nomes)
             renderOperatingDays();
             updateConfigUI();
             
@@ -912,25 +909,82 @@
             document.getElementById('filterDate').value = today;
         });
 
+        // NOVO: Carregar disponibilidade pública (SEM dados pessoais)
+        function loadPublicAvailability() {
+            const container = document.getElementById('publicAvailability');
+            if (!container) return;
+
+            const today = new Date().toISOString().split('T')[0];
+            const nextDays = [];
+            
+            // Próximos 3 dias com reservas
+            for (let i = 0; i < 5; i++) {
+                const d = new Date();
+                d.setDate(d.getDate() + i);
+                if (isOperatingDay(d)) {
+                    nextDays.push(d.toISOString().split('T')[0]);
+                }
+            }
+
+            if (nextDays.length === 0) {
+                container.innerHTML = '<div class="text-center py-4 text-stone-500">Restaurante fechado nos próximos dias</div>';
+                return;
+            }
+
+            let html = '';
+            nextDays.forEach(date => {
+                const dayReservations = appState.reservations.filter(r => r.data === date && r.estado === 'confirmada');
+                const almocoCount = dayReservations.filter(r => r.refeicao === 'almoco').length;
+                const jantarCount = dayReservations.filter(r => r.refeicao === 'jantar').length;
+                
+                const almocoSlots = generateTimeSlots('almoco').length;
+                const jantarSlots = generateTimeSlots('jantar').length;
+                
+                const almocoAvailable = Math.max(0, almocoSlots - almocoCount);
+                const jantarAvailable = Math.max(0, jantarSlots - jantarCount);
+                
+                const dateObj = new Date(date);
+                const dayName = dateObj.toLocaleDateString('pt-PT', { weekday: 'short' });
+                const dateStr = dateObj.toLocaleDateString('pt-PT', { day: 'numeric', month: 'short' });
+
+                html += `
+                    <div class="flex items-center justify-between bg-stone-900 rounded-lg p-4 border border-stone-700">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 rounded-full ${almocoAvailable > 0 || jantarAvailable > 0 ? 'bg-green-900' : 'bg-red-900'} flex items-center justify-center mr-3">
+                                <span class="${almocoAvailable > 0 || jantarAvailable > 0 ? 'text-green-400' : 'text-red-400'} font-bold text-sm">${dayName}</span>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-white text-sm">${dateStr}</p>
+                                <p class="text-xs text-stone-400">
+                                    ${almocoAvailable > 0 ? `<span class="text-yellow-400">Almoço: ${almocoAvailable} vagas</span>` : '<span class="text-red-400">Almoço: Lotado</span>'} | 
+                                    ${jantarAvailable > 0 ? `<span class="text-purple-400">Jantar: ${jantarAvailable} vagas</span>` : '<span class="text-red-400">Jantar: Lotado</span>'}
+                                </p>
+                            </div>
+                        </div>
+                        <i class="fas fa-${almocoAvailable > 0 || jantarAvailable > 0 ? 'check-circle text-green-500' : 'times-circle text-red-500'} text-xl"></i>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
         // Atualizar informações públicas (footer e página de reservas)
         function updatePublicInfo() {
             const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
             const closedDays = [];
             
-            // Verificar quais dias estão fechados (não estão em operatingDays)
             for (let i = 0; i < 7; i++) {
                 if (!appState.config.operatingDays.includes(i)) {
                     closedDays.push(days[i]);
                 }
             }
             
-            // Formatar horários
             const almocoStart = appState.config.almoco.inicio;
             const almocoEnd = appState.config.almoco.fim;
             const jantarStart = appState.config.jantar.inicio;
             const jantarEnd = appState.config.jantar.fim;
             
-            // Atualizar seção de reservas
             const horarioText = `Ter-Dom: ${almocoStart}-${almocoEnd} | ${jantarStart}-${jantarEnd}`;
             const diasFechadoText = closedDays.length > 0 ? `${closedDays.join(', ')}: Fechado` : 'Aberto todos os dias';
             
@@ -940,7 +994,6 @@
             if (infoHorario) infoHorario.textContent = horarioText;
             if (infoDiasFechado) infoDiasFechado.textContent = diasFechadoText;
             
-            // Atualizar footer
             const footerHorario = document.getElementById('footerHorario');
             if (footerHorario) {
                 footerHorario.innerHTML = `
@@ -991,7 +1044,6 @@
             today.setHours(0, 0, 0, 0);
             dateInput.min = today.toISOString().split('T')[0];
             
-            // Definir data padrão para o próximo dia útil
             let nextDay = new Date(today);
             nextDay.setDate(nextDay.getDate() + 1);
             while (!isOperatingDay(nextDay)) {
@@ -1058,7 +1110,6 @@
         function selectTimeSlot(slot, btn) {
             document.getElementById('horarioSelecionado').value = slot;
             
-            // Atualizar visual
             document.querySelectorAll('#timeSlots button').forEach(b => {
                 if (!b.disabled) {
                     b.classList.remove('slot-selected');
@@ -1093,7 +1144,6 @@
                 createdAt: new Date().toISOString()
             };
 
-            // Verificar disponibilidade novamente
             const existing = appState.reservations.filter(r => 
                 r.data === reserva.data && 
                 r.refeicao === reserva.refeicao && 
@@ -1106,11 +1156,9 @@
                 return;
             }
 
-            // Salvar reserva
             appState.reservations.push(reserva);
             localStorage.setItem('donTasko_reservations', JSON.stringify(appState.reservations));
             
-            // Mostrar confirmação
             document.getElementById('modalDetails').innerHTML = `
                 <strong>${reserva.nome}</strong><br>
                 ${reserva.data} às ${reserva.horario}<br>
@@ -1118,46 +1166,15 @@
             `;
             document.getElementById('confirmationModal').classList.remove('hidden');
             
-            // Reset form
             e.target.reset();
             document.getElementById('horarioSelecionado').value = '';
             initializeDates();
             loadAvailableSlots();
-            loadUpcomingReservations();
+            loadPublicAvailability(); // Atualiza disponibilidade pública
         });
 
         function closeModal() {
             document.getElementById('confirmationModal').classList.add('hidden');
-        }
-
-        function loadUpcomingReservations() {
-            const container = document.getElementById('upcomingReservations');
-            const upcoming = appState.reservations
-                .filter(r => new Date(r.data) >= new Date().setHours(0,0,0,0))
-                .sort((a, b) => new Date(a.data + 'T' + a.horario) - new Date(b.data + 'T' + b.horario))
-                .slice(0, 5);
-
-            if (upcoming.length === 0) {
-                container.innerHTML = '<div class="text-center py-4 text-stone-500">Nenhuma reserva próxima</div>';
-                return;
-            }
-
-            container.innerHTML = upcoming.map(r => `
-                <div class="flex items-center justify-between bg-stone-900 rounded-lg p-3 border border-stone-700">
-                    <div class="flex items-center">
-                        <div class="w-12 h-12 rounded-full bg-amber-900 flex items-center justify-center mr-3">
-                            <span class="text-amber-400 font-bold text-sm">${r.data.split('-')[2]}/${r.data.split('-')[1]}</span>
-                        </div>
-                        <div>
-                            <p class="font-semibold text-white text-sm">${r.nome}</p>
-                            <p class="text-xs text-stone-400">${r.horario} • ${r.pessoas} pessoas</p>
-                        </div>
-                    </div>
-                    <span class="px-2 py-1 rounded text-xs ${r.refeicao === 'almoco' ? 'bg-yellow-900 text-yellow-400' : 'bg-purple-900 text-purple-400'}">
-                        ${r.refeicao === 'almoco' ? 'Almoço' : 'Jantar'}
-                    </span>
-                </div>
-            `).join('');
         }
 
         // Admin Functions
@@ -1229,7 +1246,6 @@
                         <td class="py-3"><span class="px-2 py-1 rounded text-xs bg-green-900 text-green-400">${r.estado}</span></td>
                         <td class="py-3">
                             <button onclick="cancelReservation(${r.id})" class="text-red-400 hover:text-red-300 mr-2"><i class="fas fa-times"></i></button>
-                            <button onclick="confirmReservation(${r.id})" class="text-green-400 hover:text-green-300"><i class="fas fa-check"></i></button>
                         </td>
                     </tr>
                 `).join('');
@@ -1310,7 +1326,7 @@
                 localStorage.setItem('donTasko_reservations', JSON.stringify(appState.reservations));
                 loadDashboard();
                 loadAdminReservations();
-                loadUpcomingReservations();
+                loadPublicAvailability();
             }
         }
 
@@ -1321,6 +1337,7 @@
             localStorage.setItem('donTasko_reservations', JSON.stringify(appState.reservations));
             loadAdminReservations();
             loadDashboard();
+            loadPublicAvailability();
         }
 
         // Configurações
@@ -1348,7 +1365,8 @@
                 appState.config.operatingDays.sort();
             }
             saveConfigToStorage();
-            updatePublicInfo(); // Atualizar imediatamente
+            updatePublicInfo();
+            loadPublicAvailability();
         }
 
         function updateConfigUI() {
@@ -1381,8 +1399,9 @@
             };
             
             saveConfigToStorage();
-            updatePublicInfo(); // Atualizar informações públicas imediatamente
-            loadAvailableSlots(); // Recarregar slots disponíveis
+            updatePublicInfo();
+            loadAvailableSlots();
+            loadPublicAvailability();
             alert('Configurações guardadas com sucesso!');
         }
 
