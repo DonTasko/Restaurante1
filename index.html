@@ -494,7 +494,7 @@
                             <i class="fas fa-info-circle text-amber-500 mr-3"></i>
                             Informações
                         </h3>
-                        <div class="space-y-4 text-stone-300">
+                        <div class="space-y-4 text-stone-300" id="restaurantInfo">
                             <div class="flex items-start">
                                 <i class="fas fa-map-marker-alt text-amber-500 mt-1 mr-3"></i>
                                 <div>
@@ -520,8 +520,8 @@
                                 <i class="fas fa-clock text-amber-500 mt-1 mr-3"></i>
                                 <div>
                                     <p class="font-semibold">Horário</p>
-                                    <p class="text-sm">Ter-Dom: 12h30-15h00 | 19h30-23h00</p>
-                                    <p class="text-xs text-stone-500 mt-1">Segunda: Fechado</p>
+                                    <p class="text-sm" id="infoHorario">A carregar...</p>
+                                    <p class="text-xs text-stone-500 mt-1" id="infoDiasFechado">A carregar...</p>
                                 </div>
                             </div>
                         </div>
@@ -832,11 +832,8 @@
                 </div>
                 <div>
                     <h4 class="font-bold text-white mb-4">Horário</h4>
-                    <ul class="space-y-2 text-sm text-stone-400">
-                        <li>Terça a Domingo</li>
-                        <li>Almoço: 12h30 - 15h00</li>
-                        <li>Jantar: 19h30 - 23h00</li>
-                        <li class="text-amber-500">Segunda: Fechado</li>
+                    <ul class="space-y-2 text-sm text-stone-400" id="footerHorario">
+                        <li>A carregar...</li>
                     </ul>
                 </div>
             </div>
@@ -876,23 +873,34 @@
             maxReservationsPerSlot: 4
         };
 
+        // Configuração padrão (inicial)
+        const DEFAULT_CONFIG = {
+            operatingDays: [0, 2, 3, 4, 5, 6], // 0=Dom, 1=Seg(fechado), 2=Ter, etc
+            almoco: { inicio: '12:30', fim: '15:00', intervalo: 30 },
+            jantar: { inicio: '19:30', fim: '23:00', intervalo: 30 },
+            capacidade: { total: 40, mesas2: 8, mesas4: 6 }
+        };
+
         // Estado da Aplicação
         let appState = {
-            reservations: JSON.parse(localStorage.getItem('donTasko_reservations')) || [],
-            config: JSON.parse(localStorage.getItem('donTasko_config')) || {
-                operatingDays: [0, 2, 3, 4, 5, 6], // 0=Dom, 1=Seg(fechado), etc
-                almoco: { inicio: '12:30', fim: '15:00', intervalo: 30 },
-                jantar: { inicio: '19:30', fim: '23:00', intervalo: 30 },
-                capacidade: { total: 40, mesas2: 8, mesas4: 6 }
-            },
-            isAdmin: false,
-            googleAuth: null,
-            googleEvents: []
+            reservations: [],
+            config: null, // Será carregado do localStorage ou usará DEFAULT_CONFIG
+            isAdmin: false
         };
 
         // Inicialização
         document.addEventListener('DOMContentLoaded', () => {
+            // Carregar configuração do localStorage ou usar padrão
+            const savedConfig = localStorage.getItem('donTasko_config');
+            appState.config = savedConfig ? JSON.parse(savedConfig) : JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+            
+            // Carregar reservas
+            const savedReservations = localStorage.getItem('donTasko_reservations');
+            appState.reservations = savedReservations ? JSON.parse(savedReservations) : [];
+            
+            // Inicializar UI
             initializeDates();
+            updatePublicInfo(); // Atualizar informações públicas com base na config
             loadAvailableSlots();
             loadUpcomingReservations();
             renderOperatingDays();
@@ -903,6 +911,46 @@
             document.getElementById('dataReserva').min = today;
             document.getElementById('filterDate').value = today;
         });
+
+        // Atualizar informações públicas (footer e página de reservas)
+        function updatePublicInfo() {
+            const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+            const closedDays = [];
+            
+            // Verificar quais dias estão fechados (não estão em operatingDays)
+            for (let i = 0; i < 7; i++) {
+                if (!appState.config.operatingDays.includes(i)) {
+                    closedDays.push(days[i]);
+                }
+            }
+            
+            // Formatar horários
+            const almocoStart = appState.config.almoco.inicio;
+            const almocoEnd = appState.config.almoco.fim;
+            const jantarStart = appState.config.jantar.inicio;
+            const jantarEnd = appState.config.jantar.fim;
+            
+            // Atualizar seção de reservas
+            const horarioText = `Ter-Dom: ${almocoStart}-${almocoEnd} | ${jantarStart}-${jantarEnd}`;
+            const diasFechadoText = closedDays.length > 0 ? `${closedDays.join(', ')}: Fechado` : 'Aberto todos os dias';
+            
+            const infoHorario = document.getElementById('infoHorario');
+            const infoDiasFechado = document.getElementById('infoDiasFechado');
+            
+            if (infoHorario) infoHorario.textContent = horarioText;
+            if (infoDiasFechado) infoDiasFechado.textContent = diasFechadoText;
+            
+            // Atualizar footer
+            const footerHorario = document.getElementById('footerHorario');
+            if (footerHorario) {
+                footerHorario.innerHTML = `
+                    <li>Terça a Domingo</li>
+                    <li>Almoço: ${almocoStart} - ${almocoEnd}</li>
+                    <li>Jantar: ${jantarStart} - ${jantarEnd}</li>
+                    <li class="text-amber-500">${closedDays.length > 0 ? closedDays.join(', ') + ': Fechado' : ''}</li>
+                `;
+            }
+        }
 
         // Navegação Mobile
         function toggleMobileMenu() {
@@ -1062,13 +1110,6 @@
             appState.reservations.push(reserva);
             localStorage.setItem('donTasko_reservations', JSON.stringify(appState.reservations));
             
-            // Tentar sincronizar com Google Calendar (se autenticado)
-            try {
-                await syncWithGoogleCalendar(reserva);
-            } catch (error) {
-                console.log('Sync com Google Calendar falhou:', error);
-            }
-
             // Mostrar confirmação
             document.getElementById('modalDetails').innerHTML = `
                 <strong>${reserva.nome}</strong><br>
@@ -1087,16 +1128,6 @@
 
         function closeModal() {
             document.getElementById('confirmationModal').classList.add('hidden');
-        }
-
-        // Google Calendar Integration
-        async function syncWithGoogleCalendar(reserva) {
-            // Nota: Devido às restrições de OAuth, esta é uma simulação
-            // Em produção, você precisaria implementar o fluxo OAuth2 completo
-            console.log('Sincronizando com Google Calendar:', reserva);
-            
-            // Aqui você implementaria a chamada real à API do Google Calendar
-            // usando o token OAuth obtido após autenticação
         }
 
         function loadUpcomingReservations() {
@@ -1135,7 +1166,6 @@
             const user = document.getElementById('adminUser').value;
             const pass = document.getElementById('adminPass').value;
             
-            // Demo credentials - em produção, usar autenticação segura
             if (user === 'admin' && pass === 'admin123') {
                 appState.isAdmin = true;
                 document.getElementById('adminLogin').classList.add('hidden');
@@ -1155,11 +1185,9 @@
         }
 
         function showAdminTab(tab) {
-            // Hide all contents
             document.querySelectorAll('.admin-content').forEach(c => c.classList.add('hidden'));
             document.getElementById(`tab-${tab}`).classList.remove('hidden');
             
-            // Update buttons
             document.querySelectorAll('.admin-tab').forEach(b => {
                 if (b.dataset.tab === tab) {
                     b.classList.remove('bg-stone-800', 'text-stone-300');
@@ -1178,19 +1206,16 @@
             const today = new Date().toISOString().split('T')[0];
             const todayReservations = appState.reservations.filter(r => r.data === today);
             
-            // Estatísticas
             document.getElementById('dashTodayCount').textContent = todayReservations.length;
             document.getElementById('dashTotalGuests').textContent = todayReservations.reduce((sum, r) => sum + r.pessoas, 0);
             
-            const occupancy = Math.min(100, (todayReservations.length / (CONFIG.maxReservationsPerSlot * 6)) * 100); // 6 slots por refeição
+            const occupancy = Math.min(100, (todayReservations.length / (CONFIG.maxReservationsPerSlot * 6)) * 100);
             document.getElementById('dashOccupancy').textContent = Math.round(occupancy) + '%';
             document.getElementById('dashOccupancyBar').style.width = occupancy + '%';
 
-            // Próxima refeição
             const currentHour = new Date().getHours();
             document.getElementById('dashNextMeal').textContent = currentHour < 15 ? 'Próximo: Jantar' : 'Próximo: Almoço (amanhã)';
 
-            // Tabela de hoje
             const tbody = document.getElementById('todayReservationsTable');
             if (todayReservations.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="6" class="py-4 text-center text-stone-500">Sem reservas para hoje</td></tr>';
@@ -1210,7 +1235,6 @@
                 `).join('');
             }
 
-            // Ocupação semanal
             const weekContainer = document.getElementById('weeklyOccupancy');
             const days = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
             let html = '';
@@ -1220,7 +1244,7 @@
                 d.setDate(d.getDate() + i);
                 const dateStr = d.toISOString().split('T')[0];
                 const dayReservations = appState.reservations.filter(r => r.data === dateStr);
-                const totalSlots = 12; // 6 almoço + 6 jantar
+                const totalSlots = 12;
                 const percentage = Math.round((dayReservations.length / totalSlots) * 100);
                 const isOpen = isOperatingDay(d);
                 
@@ -1324,6 +1348,7 @@
                 appState.config.operatingDays.sort();
             }
             saveConfigToStorage();
+            updatePublicInfo(); // Atualizar imediatamente
         }
 
         function updateConfigUI() {
@@ -1356,6 +1381,8 @@
             };
             
             saveConfigToStorage();
+            updatePublicInfo(); // Atualizar informações públicas imediatamente
+            loadAvailableSlots(); // Recarregar slots disponíveis
             alert('Configurações guardadas com sucesso!');
         }
 
@@ -1370,7 +1397,6 @@
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
                     target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    // Fechar menu mobile se aberto
                     document.getElementById('mobileMenu').classList.add('hidden');
                 }
             });
