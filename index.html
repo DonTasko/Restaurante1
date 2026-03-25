@@ -26,9 +26,6 @@
         .nav-link { position: relative; }
         .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -4px; left: 0; background-color: #f59e0b; transition: width 0.3s; }
         .nav-link:hover::after { width: 100%; }
-        .editable-content { border: 2px dashed transparent; transition: all 0.3s; }
-        .editable-content:hover { border-color: #f59e0b; cursor: pointer; background: rgba(245, 158, 11, 0.1); }
-        .admin-edit-mode .editable-content { border-color: #f59e0b; background: rgba(245, 158, 11, 0.1); }
     </style>
 </head>
 <body class="bg-stone-900 text-stone-100">
@@ -95,10 +92,7 @@
                 <p class="mt-4 text-stone-400">Sabores autênticos, ingredientes frescos, paixão em cada prato</p>
             </div>
 
-            <!-- Menu Dinâmico (carregado via JS) -->
-            <div id="menuContainer" class="grid md:grid-cols-2 gap-12">
-                <!-- Será preenchido via JavaScript -->
-            </div>
+            <div id="menuContainer" class="grid md:grid-cols-2 gap-12"></div>
         </div>
     </section>
 
@@ -111,7 +105,6 @@
                 <p class="mt-4 text-stone-400">Seleção cuidada dos melhores vinhos nacionais e internacionais</p>
             </div>
 
-            <!-- Wine Filters -->
             <div class="flex flex-wrap justify-center gap-4 mb-12">
                 <button onclick="filterWines('all')" class="wine-filter px-6 py-2 bg-amber-600 text-white rounded-full hover:bg-amber-700 transition active">Todos</button>
                 <button onclick="filterWines('tinto')" class="wine-filter px-6 py-2 bg-stone-800 text-stone-300 rounded-full hover:bg-stone-700 transition">Tintos</button>
@@ -120,10 +113,7 @@
                 <button onclick="filterWines('espumante')" class="wine-filter px-6 py-2 bg-stone-800 text-stone-300 rounded-full hover:bg-stone-700 transition">Espumantes</button>
             </div>
 
-            <!-- Garrafeira Dinâmica -->
-            <div id="wineGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Será preenchido via JavaScript -->
-            </div>
+            <div id="wineGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
         </div>
     </section>
 
@@ -138,7 +128,6 @@
             </div>
 
             <div class="grid lg:grid-cols-2 gap-12">
-                <!-- Formulário de Reserva -->
                 <div class="bg-stone-800 rounded-2xl p-8 shadow-2xl border border-stone-700">
                     <h3 class="font-display text-2xl font-bold text-white mb-6 flex items-center">
                         <i class="fas fa-calendar-check text-amber-500 mr-3"></i>
@@ -212,7 +201,6 @@
                     </form>
                 </div>
 
-                <!-- Informações e Disponibilidade -->
                 <div class="space-y-6">
                     <div class="bg-stone-800 rounded-2xl p-8 shadow-2xl border border-stone-700">
                         <h3 class="font-display text-2xl font-bold text-white mb-6 flex items-center">
@@ -245,12 +233,8 @@
                                 <i class="fas fa-clock text-amber-500 mt-1 mr-3"></i>
                                 <div>
                                     <p class="font-semibold">Horário da Cozinha</p>
-                                    <div id="infoHorarioCozinha" class="text-sm">
-                                        <!-- Preenchido via JS -->
-                                    </div>
-                                    <div id="infoHorarioSala" class="text-xs text-stone-500 mt-1">
-                                        <!-- Preenchido via JS -->
-                                    </div>
+                                    <div id="infoHorarioCozinha" class="text-sm"></div>
+                                    <div id="infoHorarioSala" class="text-xs text-stone-500 mt-1"></div>
                                     <p class="text-xs text-stone-500 mt-2" id="infoDiasFechado"></p>
                                 </div>
                             </div>
@@ -277,19 +261,20 @@
                 <div class="w-24 h-1 bg-amber-500 mx-auto"></div>
             </div>
 
+            <!-- Login Form -->
             <div id="adminLogin" class="max-w-md mx-auto bg-stone-800 rounded-2xl p-8 shadow-2xl border border-stone-700">
                 <div class="text-center mb-6">
                     <i class="fas fa-lock text-4xl text-amber-500 mb-4"></i>
                     <h3 class="text-2xl font-bold text-white">Login Administrador</h3>
                 </div>
-                <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+                <form id="loginForm" onsubmit="handleAdminLogin(event)" class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-stone-400 mb-2">Utilizador</label>
-                        <input type="text" id="adminUser" required class="w-full px-4 py-3 bg-stone-900 border border-stone-600 rounded-lg focus:ring-2 focus:ring-amber-500 text-white" placeholder="admin">
+                        <input type="text" id="adminUser" required class="w-full px-4 py-3 bg-stone-900 border border-stone-600 rounded-lg focus:ring-2 focus:ring-amber-500 text-white" placeholder="admin" value="admin">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-stone-400 mb-2">Palavra-passe</label>
-                        <input type="password" id="adminPass" required class="w-full px-4 py-3 bg-stone-900 border border-stone-600 rounded-lg focus:ring-2 focus:ring-amber-500 text-white" placeholder="••••••">
+                        <input type="password" id="adminPass" required class="w-full px-4 py-3 bg-stone-900 border border-stone-600 rounded-lg focus:ring-2 focus:ring-amber-500 text-white" placeholder="••••••" value="admin123">
                     </div>
                     <button type="submit" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-lg transition">
                         Entrar
@@ -298,6 +283,7 @@
                 </form>
             </div>
 
+            <!-- Admin Dashboard -->
             <div id="adminDashboard" class="hidden space-y-8">
                 <div class="flex flex-wrap gap-2 border-b border-stone-700 pb-4">
                     <button onclick="showAdminTab('dashboard')" class="admin-tab px-6 py-2 bg-amber-600 text-white rounded-lg font-medium transition" data-tab="dashboard">
@@ -443,7 +429,7 @@
                             </div>
 
                             <div class="border-t border-stone-700 pt-4">
-                                <h4 class="text-stone-400 font-semibold mb-3 text-sm">Horário da Sala (opcional - se diferente da cozinha)</h4>
+                                <h4 class="text-stone-400 font-semibold mb-3 text-sm">Horário da Sala (opcional)</h4>
                                 <div class="grid grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-xs text-stone-500 mb-1">Abertura Sala</label>
@@ -494,21 +480,12 @@
                             </button>
                         </div>
                         
-                        <div id="menuEditor" class="space-y-4">
-                            <!-- Editor de menu será preenchido via JS -->
-                        </div>
+                        <div id="menuEditor" class="space-y-4"></div>
                         
                         <div class="mt-6 pt-6 border-t border-stone-700">
                             <button onclick="saveMenuData()" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-lg transition">
                                 <i class="fas fa-save mr-2"></i>Guardar Alterações do Menu
                             </button>
-                        </div>
-                    </div>
-
-                    <div class="bg-stone-900 rounded-xl p-6 border border-stone-700">
-                        <h4 class="text-stone-400 font-semibold mb-4">Pré-visualização do Menu Público</h4>
-                        <div id="menuPreview" class="grid md:grid-cols-2 gap-8 opacity-75">
-                            <!-- Preview será atualizado via JS -->
                         </div>
                     </div>
                 </div>
@@ -523,21 +500,12 @@
                             </button>
                         </div>
                         
-                        <div id="wineEditor" class="space-y-4">
-                            <!-- Editor de garrafeira será preenchido via JS -->
-                        </div>
+                        <div id="wineEditor" class="space-y-4"></div>
                         
                         <div class="mt-6 pt-6 border-t border-stone-700">
                             <button onclick="saveWineData()" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-lg transition">
                                 <i class="fas fa-save mr-2"></i>Guardar Alterações da Garrafeira
                             </button>
-                        </div>
-                    </div>
-
-                    <div class="bg-stone-900 rounded-xl p-6 border border-stone-700">
-                        <h4 class="text-stone-400 font-semibold mb-4">Pré-visualização da Garrafeira Pública</h4>
-                        <div id="winePreview" class="grid md:grid-cols-3 gap-6 opacity-75">
-                            <!-- Preview será atualizado via JS -->
                         </div>
                     </div>
                 </div>
@@ -645,7 +613,7 @@
     </div>
 
     <script>
-        // Dados padrão do Menu
+        // Dados padrão
         const DEFAULT_MENU = {
             entradas: [
                 { id: 1, nome: "Carpaccio de Polvo", descricao: "Azeite de limão, pimentos grelhados, microgreens", preco: 14, categoria: "entradas" },
@@ -670,7 +638,6 @@
             ]
         };
 
-        // Dados padrão da Garrafeira
         const DEFAULT_WINES = [
             { id: 1, nome: "Pêra-Manca 2017", tipo: "tinto", regiao: "Alentejo", descricao: "Castas: Alicante Bouschet, Aragonez. Notas de frutos negros, chocolate e especiarias.", preco: 85, volume: "750ml" },
             { id: 2, nome: "Barca Velha 2008", tipo: "tinto", regiao: "Douro", descricao: "O ícone português. Complexo, elegante, notas de violeta, ameixa e tabaco.", preco: 450, volume: "750ml" },
@@ -683,16 +650,18 @@
             { id: 9, nome: "Moët & Chandon Impérial", tipo: "espumante", regiao: "Champagne, França", descricao: "Brut, elegante, notas de maçã verde e flores brancas.", preco: 95, volume: "750ml" }
         ];
 
-        // Configuração padrão
         const DEFAULT_CONFIG = {
             operatingDays: [0, 2, 3, 4, 5, 6],
             almoco: { inicio: '12:00', fim: '15:00', intervalo: 30 },
             jantar: { inicio: '19:00', fim: '23:00', intervalo: 30 },
-            sala: { abertura: '12:00', fecho: '23:30' }, // Horário da sala (se diferente)
+            sala: { abertura: '12:00', fecho: '23:30' },
             capacidade: { total: 40, mesas2: 8, mesas4: 6 }
         };
 
-        // Estado da Aplicação
+        const CONFIG = {
+            maxReservationsPerSlot: 4
+        };
+
         let appState = {
             reservations: [],
             config: null,
@@ -703,7 +672,6 @@
 
         // Inicialização
         document.addEventListener('DOMContentLoaded', () => {
-            // Carregar dados do localStorage ou usar padrões
             appState.config = JSON.parse(localStorage.getItem('donTasko_config')) || JSON.parse(JSON.stringify(DEFAULT_CONFIG));
             appState.reservations = JSON.parse(localStorage.getItem('donTasko_reservations')) || [];
             appState.menu = JSON.parse(localStorage.getItem('donTasko_menu')) || JSON.parse(JSON.stringify(DEFAULT_MENU));
@@ -720,148 +688,253 @@
             
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('dataReserva').min = today;
-            document.getElementById('filterDate').value = today;
+            const filterDate = document.getElementById('filterDate');
+            if (filterDate) filterDate.value = today;
         });
 
-        // Renderizar Menu Público
-        function renderMenu() {
-            const container = document.getElementById('menuContainer');
-            if (!container || !appState.menu) return;
-
-            const categorias = {
-                entradas: { titulo: 'Entradas', icone: 'fa-utensils' },
-                principais: { titulo: 'Pratos Principais', icone: 'fa-drumstick-bite' },
-                sobremesas: { titulo: 'Sobremesas', icone: 'fa-ice-cream' },
-                especiais: { titulo: 'Sugestão do Chef', icone: 'fa-star', especial: true }
-            };
-
-            let html = '';
+        // FUNÇÕES DE ADMIN - CORRIGIDAS E COMPLETAS
+        
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const user = document.getElementById('adminUser').value;
+            const pass = document.getElementById('adminPass').value;
             
-            Object.keys(categorias).forEach(key => {
-                const cat = categorias[key];
-                const itens = appState.menu[key] || [];
-                
-                const bgClass = cat.especial ? 'bg-gradient-to-br from-amber-900 to-stone-800 border-amber-700' : 'bg-stone-800 border-stone-700';
-                const tituloClass = cat.especial ? 'text-white' : 'text-white';
-                
-                html += `
-                    <div class="${bgClass} rounded-2xl p-8 shadow-2xl border relative overflow-hidden">
-                        ${cat.especial ? '<div class="absolute top-0 right-0 bg-amber-500 text-stone-900 px-4 py-1 text-sm font-bold rounded-bl-lg">ESPECIAL</div>' : ''}
-                        <div class="flex items-center mb-6">
-                            <i class="fas ${cat.icone} ${cat.especial ? 'text-amber-400' : 'text-amber-500'} text-2xl mr-3"></i>
-                            <h3 class="font-display text-3xl font-bold ${tituloClass}">${cat.titulo}</h3>
-                        </div>
-                        <div class="space-y-6">
-                            ${itens.map(item => `
-                                <div class="menu-item flex justify-between items-start ${cat.especial ? 'border-b border-amber-800 pb-4' : 'border-b border-stone-700 pb-4'} ${item === itens[itens.length - 1] ? 'border-b-0 pb-0' : ''}">
-                                    <div>
-                                        <h4 class="text-lg font-semibold ${cat.especial ? 'text-amber-100' : 'text-amber-100'}">${item.nome}</h4>
-                                        <p class="text-sm ${cat.especial ? 'text-stone-300' : 'text-stone-400'} mt-1">${item.descricao}</p>
-                                    </div>
-                                    <span class="text-amber-500 font-bold text-lg">${item.preco}€</span>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
-            });
-            
-            container.innerHTML = html;
+            if (user === 'admin' && pass === 'admin123') {
+                appState.isAdmin = true;
+                document.getElementById('adminLogin').classList.add('hidden');
+                document.getElementById('adminDashboard').classList.remove('hidden');
+                loadDashboard();
+            } else {
+                alert('Credenciais inválidas');
+            }
         }
 
-        // Renderizar Garrafeira Pública
-        function renderWines() {
-            const container = document.getElementById('wineGrid');
-            if (!container || !appState.wines) return;
+        function logoutAdmin() {
+            appState.isAdmin = false;
+            document.getElementById('adminDashboard').classList.add('hidden');
+            document.getElementById('adminLogin').classList.remove('hidden');
+            document.getElementById('adminUser').value = '';
+            document.getElementById('adminPass').value = '';
+        }
 
-            const tipoCores = {
-                tinto: 'text-red-400',
-                branco: 'text-yellow-400',
-                rose: 'text-pink-400',
-                espumante: 'text-purple-400'
-            };
+        function showAdminTab(tab) {
+            document.querySelectorAll('.admin-content').forEach(c => c.classList.add('hidden'));
+            const selectedTab = document.getElementById(`tab-${tab}`);
+            if (selectedTab) selectedTab.classList.remove('hidden');
+            
+            document.querySelectorAll('.admin-tab').forEach(b => {
+                if (b.dataset.tab === tab) {
+                    b.classList.remove('bg-stone-800', 'text-stone-300');
+                    b.classList.add('bg-amber-600', 'text-white');
+                } else {
+                    b.classList.add('bg-stone-800', 'text-stone-300');
+                    b.classList.remove('bg-amber-600', 'text-white');
+                }
+            });
 
-            const tipoLabels = {
-                tinto: 'VINHO TINTO',
-                branco: 'VINHO BRANCO',
-                rose: 'VINHO ROSÉ',
-                espumante: 'ESPUMANTE'
-            };
+            if (tab === 'dashboard') loadDashboard();
+            if (tab === 'reservas') loadAdminReservations();
+            if (tab === 'menu') renderMenuEditor();
+            if (tab === 'garrafeira') renderWineEditor();
+        }
 
-            container.innerHTML = appState.wines.map(wine => `
-                <div class="wine-card ${wine.tipo} bg-stone-900 rounded-xl p-6 border border-stone-800 hover:border-amber-600 transition group">
-                    <div class="flex items-start justify-between mb-4">
-                        <div>
-                            <span class="text-xs ${tipoCores[wine.tipo]} font-semibold tracking-wider">${tipoLabels[wine.tipo]}</span>
-                            <h3 class="font-display text-xl font-bold text-white mt-1">${wine.nome}</h3>
-                            <p class="text-sm text-stone-400">${wine.regiao}</p>
+        function loadDashboard() {
+            const today = new Date().toISOString().split('T')[0];
+            const todayReservations = appState.reservations.filter(r => r.data === today);
+            
+            document.getElementById('dashTodayCount').textContent = todayReservations.length;
+            document.getElementById('dashTotalGuests').textContent = todayReservations.reduce((sum, r) => sum + r.pessoas, 0);
+            
+            const occupancy = Math.min(100, (todayReservations.length / (CONFIG.maxReservationsPerSlot * 6)) * 100);
+            document.getElementById('dashOccupancy').textContent = Math.round(occupancy) + '%';
+            document.getElementById('dashOccupancyBar').style.width = occupancy + '%';
+
+            const tbody = document.getElementById('todayReservationsTable');
+            if (todayReservations.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="py-4 text-center text-stone-500">Sem reservas para hoje</td></tr>';
+            } else {
+                tbody.innerHTML = todayReservations.sort((a, b) => a.horario.localeCompare(b.horario)).map(r => `
+                    <tr class="border-b border-stone-800">
+                        <td class="py-3 text-white">${r.horario}</td>
+                        <td class="py-3 text-white">${r.nome}</td>
+                        <td class="py-3 text-stone-400">${r.pessoas}</td>
+                        <td class="py-3 text-stone-400">${r.telefone}</td>
+                        <td class="py-3"><span class="px-2 py-1 rounded text-xs bg-green-900 text-green-400">${r.estado}</span></td>
+                        <td class="py-3">
+                            <button onclick="cancelReservation(${r.id})" class="text-red-400 hover:text-red-300 mr-2"><i class="fas fa-times"></i></button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            const weekContainer = document.getElementById('weeklyOccupancy');
+            const days = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+            let html = '';
+            
+            for (let i = 0; i < 7; i++) {
+                const d = new Date();
+                d.setDate(d.getDate() + i);
+                const dateStr = d.toISOString().split('T')[0];
+                const dayReservations = appState.reservations.filter(r => r.data === dateStr);
+                const totalSlots = 12;
+                const percentage = Math.round((dayReservations.length / totalSlots) * 100);
+                const isOpen = isOperatingDay(d);
+                
+                html += `
+                    <div class="text-center">
+                        <p class="text-xs text-stone-400 mb-2">${days[d.getDay()]}</p>
+                        <div class="relative h-32 bg-stone-900 rounded-lg overflow-hidden ${!isOpen ? 'opacity-50' : ''}">
+                            <div class="absolute bottom-0 w-full bg-amber-600 transition-all duration-500" style="height: ${isOpen ? percentage : 0}%"></div>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span class="text-lg font-bold text-white z-10">${isOpen ? percentage + '%' : 'F'}</span>
+                            </div>
                         </div>
-                        <span class="text-2xl text-amber-500 font-bold">${wine.preco}€</span>
+                        <p class="text-xs text-stone-500 mt-1">${dayReservations.length} res</p>
                     </div>
-                    <p class="text-stone-400 text-sm mb-4">${wine.descricao}</p>
-                    <div class="flex items-center text-xs text-stone-500">
-                        <i class="fas fa-wine-bottle mr-2"></i>
-                        <span>${wine.volume}</span>
-                    </div>
+                `;
+            }
+            weekContainer.innerHTML = html;
+        }
+
+        function loadAdminReservations() {
+            const filterDate = document.getElementById('filterDate').value;
+            const filterMeal = document.getElementById('filterMeal').value;
+            
+            let filtered = appState.reservations;
+            if (filterDate) {
+                filtered = filtered.filter(r => r.data === filterDate);
+            }
+            if (filterMeal !== 'all') {
+                filtered = filtered.filter(r => r.refeicao === filterMeal);
+            }
+            
+            filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            
+            const tbody = document.getElementById('allReservationsTable');
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="py-4 text-center text-stone-500">Nenhuma reserva encontrada</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = filtered.map(r => `
+                <tr class="border-b border-stone-800">
+                    <td class="py-3 text-white">${r.data}</td>
+                    <td class="py-3 text-white">${r.horario}</td>
+                    <td class="py-3 text-white">${r.nome}</td>
+                    <td class="py-3 text-stone-400">${r.pessoas}</td>
+                    <td class="py-3"><span class="px-2 py-1 rounded text-xs ${r.refeicao === 'almoco' ? 'bg-yellow-900 text-yellow-400' : 'bg-purple-900 text-purple-400'}">${r.refeicao === 'almoco' ? 'Almoço' : 'Jantar'}</span></td>
+                    <td class="py-3 text-stone-400">${r.telefone}</td>
+                    <td class="py-3"><span class="px-2 py-1 rounded text-xs ${r.estado === 'confirmada' ? 'bg-green-900 text-green-400' : r.estado === 'cancelada' ? 'bg-red-900 text-red-400' : 'bg-yellow-900 text-yellow-400'}">${r.estado}</span></td>
+                    <td class="py-3">
+                        ${r.estado !== 'cancelada' ? `<button onclick="cancelReservation(${r.id})" class="text-red-400 hover:text-red-300 mr-2" title="Cancelar"><i class="fas fa-times"></i></button>` : ''}
+                        <button onclick="deleteReservation(${r.id})" class="text-stone-500 hover:text-stone-300" title="Eliminar"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function cancelReservation(id) {
+            if (!confirm('Tem certeza que deseja cancelar esta reserva?')) return;
+            
+            const idx = appState.reservations.findIndex(r => r.id === id);
+            if (idx > -1) {
+                appState.reservations[idx].estado = 'cancelada';
+                localStorage.setItem('donTasko_reservations', JSON.stringify(appState.reservations));
+                loadDashboard();
+                loadAdminReservations();
+                loadPublicAvailability();
+            }
+        }
+
+        function deleteReservation(id) {
+            if (!confirm('Tem certeza que deseja eliminar permanentemente esta reserva?')) return;
+            
+            appState.reservations = appState.reservations.filter(r => r.id !== id);
+            localStorage.setItem('donTasko_reservations', JSON.stringify(appState.reservations));
+            loadAdminReservations();
+            loadDashboard();
+            loadPublicAvailability();
+        }
+
+        function renderOperatingDays() {
+            const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+            const container = document.getElementById('operatingDays');
+            if (!container) return;
+            
+            container.innerHTML = days.map((day, idx) => `
+                <div class="flex items-center justify-between bg-stone-900 rounded-lg p-3">
+                    <span class="text-white">${day}</span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" class="sr-only peer" ${appState.config.operatingDays.includes(idx) ? 'checked' : ''} onchange="toggleOperatingDay(${idx})">
+                        <div class="w-11 h-6 bg-stone-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-600"></div>
+                    </label>
                 </div>
             `).join('');
         }
 
-        // Atualizar informações públicas (footer e página de reservas)
-        function updatePublicInfo() {
-            const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
-            const closedDays = [];
-            
-            for (let i = 0; i < 7; i++) {
-                if (!appState.config.operatingDays.includes(i)) {
-                    closedDays.push(days[i]);
-                }
+        function toggleOperatingDay(day) {
+            const idx = appState.config.operatingDays.indexOf(day);
+            if (idx > -1) {
+                appState.config.operatingDays.splice(idx, 1);
+            } else {
+                appState.config.operatingDays.push(day);
+                appState.config.operatingDays.sort();
             }
-            
-            const almocoStart = appState.config.almoco.inicio;
-            const almocoEnd = appState.config.almoco.fim;
-            const jantarStart = appState.config.jantar.inicio;
-            const jantarEnd = appState.config.jantar.fim;
-            
-            // Horário da cozinha (principal)
-            const horarioCozinha = `
-                <div class="mb-2">
-                    <span class="text-amber-400 font-semibold">Almoço:</span> ${almocoStart} - ${almocoEnd}<br>
-                    <span class="text-amber-400 font-semibold">Jantar:</span> ${jantarStart} - ${jantarEnd}
-                </div>
-            `;
-            
-            // Horário da sala (se diferente)
-            const salaAbertura = appState.config.sala?.abertura || almocoStart;
-            const salaFecho = appState.config.sala?.fecho || jantarEnd;
-            const horarioSala = (salaAbertura !== almocoStart || salaFecho !== jantarEnd) 
-                ? `<span class="text-stone-500">Sala: ${salaAbertura} - ${salaFecho}</span>` 
-                : '';
-            
-            const infoHorarioCozinha = document.getElementById('infoHorarioCozinha');
-            const infoHorarioSala = document.getElementById('infoHorarioSala');
-            const infoDiasFechado = document.getElementById('infoDiasFechado');
-            
-            if (infoHorarioCozinha) infoHorarioCozinha.innerHTML = horarioCozinha;
-            if (infoHorarioSala) infoHorarioSala.innerHTML = horarioSala;
-            if (infoDiasFechado) infoDiasFechado.textContent = closedDays.length > 0 ? `Fechado: ${closedDays.join(', ')}` : 'Aberto todos os dias';
-            
-            const footerHorario = document.getElementById('footerHorario');
-            if (footerHorario) {
-                footerHorario.innerHTML = `
-                    <li>Terça a Domingo</li>
-                    <li><span class="text-amber-400">Cozinha:</span> ${almocoStart}-${almocoEnd} | ${jantarStart}-${jantarEnd}</li>
-                    ${horarioSala ? `<li><span class="text-stone-500">Sala:</span> ${salaAbertura}-${salaFecho}</li>` : ''}
-                    ${closedDays.length > 0 ? `<li class="text-amber-500">Fechado: ${closedDays.join(', ')}</li>` : ''}
-                `;
-            }
+            saveConfigToStorage();
+            updatePublicInfo();
+            loadPublicAvailability();
         }
 
-        // Resto das funções (toggleMobileMenu, filterWines, initializeDates, isOperatingDay, generateTimeSlots, loadAvailableSlots, selectTimeSlot, formulário de reserva, funções admin, etc.) permanecem iguais à versão anterior...
+        function updateConfigUI() {
+            document.getElementById('almocoInicio').value = appState.config.almoco.inicio;
+            document.getElementById('almocoFim').value = appState.config.almoco.fim;
+            document.getElementById('almocoIntervalo').value = appState.config.almoco.intervalo;
+            document.getElementById('jantarInicio').value = appState.config.jantar.inicio;
+            document.getElementById('jantarFim').value = appState.config.jantar.fim;
+            document.getElementById('jantarIntervalo').value = appState.config.jantar.intervalo;
+            document.getElementById('totalSeats').value = appState.config.capacidade.total;
+            document.getElementById('tables2').value = appState.config.capacidade.mesas2;
+            document.getElementById('tables4').value = appState.config.capacidade.mesas4;
+            
+            const salaAbertura = document.getElementById('salaAbertura');
+            const salaFecho = document.getElementById('salaFecho');
+            if (salaAbertura) salaAbertura.value = appState.config.sala?.abertura || appState.config.almoco.inicio;
+            if (salaFecho) salaFecho.value = appState.config.sala?.fecho || appState.config.jantar.fim;
+        }
 
-        // [Incluir aqui todas as outras funções do código anterior: toggleMobileMenu, filterWines, initializeDates, isOperatingDay, generateTimeSlots, loadAvailableSlots, selectTimeSlot, handleAdminLogin, logoutAdmin, showAdminTab, loadDashboard, loadAdminReservations, cancelReservation, deleteReservation, renderOperatingDays, toggleOperatingDay, updateConfigUI, saveConfig, saveConfigToStorage, loadPublicAvailability, etc.]
+        function saveConfig() {
+            appState.config.almoco = {
+                inicio: document.getElementById('almocoInicio').value,
+                fim: document.getElementById('almocoFim').value,
+                intervalo: parseInt(document.getElementById('almocoIntervalo').value)
+            };
+            appState.config.jantar = {
+                inicio: document.getElementById('jantarInicio').value,
+                fim: document.getElementById('jantarFim').value,
+                intervalo: parseInt(document.getElementById('jantarIntervalo').value)
+            };
+            appState.config.capacidade = {
+                total: parseInt(document.getElementById('totalSeats').value),
+                mesas2: parseInt(document.getElementById('tables2').value),
+                mesas4: parseInt(document.getElementById('tables4').value)
+            };
+            appState.config.sala = {
+                abertura: document.getElementById('salaAbertura').value,
+                fecho: document.getElementById('salaFecho').value
+            };
+            
+            saveConfigToStorage();
+            updatePublicInfo();
+            loadAvailableSlots();
+            loadPublicAvailability();
+            alert('Configurações guardadas com sucesso!');
+        }
 
-        // Funções de Gestão de Menu (NOVAS)
+        function saveConfigToStorage() {
+            localStorage.setItem('donTasko_config', JSON.stringify(appState.config));
+        }
+
+        // Gestão de Menu
         function renderMenuEditor() {
             const container = document.getElementById('menuEditor');
             if (!container) return;
@@ -899,9 +972,6 @@
             });
             
             container.innerHTML = html;
-            
-            // Atualizar preview
-            document.getElementById('menuPreview').innerHTML = container.innerHTML;
         }
 
         function addNewMenuItem() {
@@ -948,7 +1018,7 @@
             alert('Menu guardado com sucesso!');
         }
 
-        // Funções de Gestão de Garrafeira (NOVAS)
+        // Gestão de Garrafeira
         function renderWineEditor() {
             const container = document.getElementById('wineEditor');
             if (!container) return;
@@ -991,17 +1061,6 @@
                     </div>
                 </div>
             `).join('');
-            
-            // Atualizar preview
-            const preview = document.getElementById('winePreview');
-            if (preview) {
-                preview.innerHTML = appState.wines.map(wine => `
-                    <div class="bg-stone-900 rounded-xl p-4 border border-stone-800 opacity-75">
-                        <h4 class="text-amber-500 font-bold">${wine.nome}</h4>
-                        <p class="text-xs text-stone-400">${wine.regiao} - ${wine.preco}€</p>
-                    </div>
-                `).join('');
-            }
         }
 
         function addNewWineItem() {
@@ -1036,41 +1095,372 @@
             alert('Garrafeira guardada com sucesso!');
         }
 
-        // Modificar showAdminTab para incluir novas tabs
-        const originalShowAdminTab = showAdminTab;
-        showAdminTab = function(tab) {
-            // Esconder todos os conteúdos
-            document.querySelectorAll('.admin-content').forEach(c => c.classList.add('hidden'));
+        // Funções Públicas
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        function renderMenu() {
+            const container = document.getElementById('menuContainer');
+            if (!container || !appState.menu) return;
+
+            const categorias = {
+                entradas: { titulo: 'Entradas', icone: 'fa-utensils' },
+                principais: { titulo: 'Pratos Principais', icone: 'fa-drumstick-bite' },
+                sobremesas: { titulo: 'Sobremesas', icone: 'fa-ice-cream' },
+                especiais: { titulo: 'Sugestão do Chef', icone: 'fa-star', especial: true }
+            };
+
+            let html = '';
             
-            // Mostrar o selecionado
-            const selectedTab = document.getElementById(`tab-${tab}`);
-            if (selectedTab) selectedTab.classList.remove('hidden');
+            Object.keys(categorias).forEach(key => {
+                const cat = categorias[key];
+                const itens = appState.menu[key] || [];
+                
+                const bgClass = cat.especial ? 'bg-gradient-to-br from-amber-900 to-stone-800 border-amber-700' : 'bg-stone-800 border-stone-700';
+                
+                html += `
+                    <div class="${bgClass} rounded-2xl p-8 shadow-2xl border relative overflow-hidden">
+                        ${cat.especial ? '<div class="absolute top-0 right-0 bg-amber-500 text-stone-900 px-4 py-1 text-sm font-bold rounded-bl-lg">ESPECIAL</div>' : ''}
+                        <div class="flex items-center mb-6">
+                            <i class="fas ${cat.icone} ${cat.especial ? 'text-amber-400' : 'text-amber-500'} text-2xl mr-3"></i>
+                            <h3 class="font-display text-3xl font-bold text-white">${cat.titulo}</h3>
+                        </div>
+                        <div class="space-y-6">
+                            ${itens.map(item => `
+                                <div class="menu-item flex justify-between items-start ${cat.especial ? 'border-b border-amber-800 pb-4' : 'border-b border-stone-700 pb-4'}">
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-amber-100">${item.nome}</h4>
+                                        <p class="text-sm ${cat.especial ? 'text-stone-300' : 'text-stone-400'} mt-1">${item.descricao}</p>
+                                    </div>
+                                    <span class="text-amber-500 font-bold text-lg">${item.preco}€</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
             
-            // Atualizar botões
-            document.querySelectorAll('.admin-tab').forEach(b => {
-                if (b.dataset.tab === tab) {
-                    b.classList.remove('bg-stone-800', 'text-stone-300');
-                    b.classList.add('bg-amber-600', 'text-white');
+            container.innerHTML = html;
+        }
+
+        function renderWines() {
+            const container = document.getElementById('wineGrid');
+            if (!container || !appState.wines) return;
+
+            const tipoCores = {
+                tinto: 'text-red-400',
+                branco: 'text-yellow-400',
+                rose: 'text-pink-400',
+                espumante: 'text-purple-400'
+            };
+
+            const tipoLabels = {
+                tinto: 'VINHO TINTO',
+                branco: 'VINHO BRANCO',
+                rose: 'VINHO ROSÉ',
+                espumante: 'ESPUMANTE'
+            };
+
+            container.innerHTML = appState.wines.map(wine => `
+                <div class="wine-card ${wine.tipo} bg-stone-900 rounded-xl p-6 border border-stone-800 hover:border-amber-600 transition group">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <span class="text-xs ${tipoCores[wine.tipo]} font-semibold tracking-wider">${tipoLabels[wine.tipo]}</span>
+                            <h3 class="font-display text-xl font-bold text-white mt-1">${wine.nome}</h3>
+                            <p class="text-sm text-stone-400">${wine.regiao}</p>
+                        </div>
+                        <span class="text-2xl text-amber-500 font-bold">${wine.preco}€</span>
+                    </div>
+                    <p class="text-stone-400 text-sm mb-4">${wine.descricao}</p>
+                    <div class="flex items-center text-xs text-stone-500">
+                        <i class="fas fa-wine-bottle mr-2"></i>
+                        <span>${wine.volume}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterWines(type) {
+            const cards = document.querySelectorAll('.wine-card');
+            const buttons = document.querySelectorAll('.wine-filter');
+            
+            buttons.forEach(btn => {
+                if (btn.textContent.toLowerCase().includes(type) || (type === 'all' && btn.textContent === 'Todos')) {
+                    btn.classList.remove('bg-stone-800', 'text-stone-300');
+                    btn.classList.add('bg-amber-600', 'text-white');
                 } else {
-                    b.classList.add('bg-stone-800', 'text-stone-300');
-                    b.classList.remove('bg-amber-600', 'text-white');
+                    btn.classList.add('bg-stone-800', 'text-stone-300');
+                    btn.classList.remove('bg-amber-600', 'text-white');
                 }
             });
 
-            if (tab === 'dashboard') loadDashboard();
-            if (tab === 'reservas') loadAdminReservations();
-            if (tab === 'menu') renderMenuEditor();
-            if (tab === 'garrafeira') renderWineEditor();
-        };
+            cards.forEach(card => {
+                if (type === 'all' || card.classList.contains(type)) {
+                    card.style.display = 'block';
+                    setTimeout(() => card.style.opacity = '1', 10);
+                } else {
+                    card.style.opacity = '0';
+                    setTimeout(() => card.style.display = 'none', 300);
+                }
+            });
+        }
 
-        // [Continuar com todas as outras funções do código anterior...]
-        // Por brevidade, estou a omitir as funções que permanecem iguais, mas devem ser incluídas:
-        // toggleMobileMenu, filterWines, initializeDates, isOperatingDay, generateTimeSlots, 
-        // loadAvailableSlots, selectTimeSlot, closeModal, handleAdminLogin, logoutAdmin, 
-        // loadDashboard, loadAdminReservations, cancelReservation, deleteReservation, 
-        // renderOperatingDays, toggleOperatingDay, updateConfigUI, saveConfig, saveConfigToStorage, 
-        // loadPublicAvailability
+        function updatePublicInfo() {
+            const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+            const closedDays = [];
+            
+            for (let i = 0; i < 7; i++) {
+                if (!appState.config.operatingDays.includes(i)) {
+                    closedDays.push(days[i]);
+                }
+            }
+            
+            const almocoStart = appState.config.almoco.inicio;
+            const almocoEnd = appState.config.almoco.fim;
+            const jantarStart = appState.config.jantar.inicio;
+            const jantarEnd = appState.config.jantar.fim;
+            
+            const horarioCozinha = `
+                <div class="mb-2">
+                    <span class="text-amber-400 font-semibold">Almoço:</span> ${almocoStart} - ${almocoEnd}<br>
+                    <span class="text-amber-400 font-semibold">Jantar:</span> ${jantarStart} - ${jantarEnd}
+                </div>
+            `;
+            
+            const salaAbertura = appState.config.sala?.abertura || almocoStart;
+            const salaFecho = appState.config.sala?.fecho || jantarEnd;
+            const horarioSala = (salaAbertura !== almocoStart || salaFecho !== jantarEnd) 
+                ? `<span class="text-stone-500">Sala: ${salaAbertura} - ${salaFecho}</span>` 
+                : '';
+            
+            const infoHorarioCozinha = document.getElementById('infoHorarioCozinha');
+            const infoHorarioSala = document.getElementById('infoHorarioSala');
+            const infoDiasFechado = document.getElementById('infoDiasFechado');
+            
+            if (infoHorarioCozinha) infoHorarioCozinha.innerHTML = horarioCozinha;
+            if (infoHorarioSala) infoHorarioSala.innerHTML = horarioSala;
+            if (infoDiasFechado) infoDiasFechado.textContent = closedDays.length > 0 ? `Fechado: ${closedDays.join(', ')}` : 'Aberto todos os dias';
+            
+            const footerHorario = document.getElementById('footerHorario');
+            if (footerHorario) {
+                footerHorario.innerHTML = `
+                    <li>Terça a Domingo</li>
+                    <li><span class="text-amber-400">Cozinha:</span> ${almocoStart}-${almocoEnd} | ${jantarStart}-${jantarEnd}</li>
+                    ${horarioSala ? `<li><span class="text-stone-500">Sala:</span> ${salaAbertura}-${salaFecho}</li>` : ''}
+                    ${closedDays.length > 0 ? `<li class="text-amber-500">Fechado: ${closedDays.join(', ')}</li>` : ''}
+                `;
+            }
+        }
 
+        function initializeDates() {
+            const dateInput = document.getElementById('dataReserva');
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            dateInput.min = today.toISOString().split('T')[0];
+            
+            let nextDay = new Date(today);
+            nextDay.setDate(nextDay.getDate() + 1);
+            while (!isOperatingDay(nextDay)) {
+                nextDay.setDate(nextDay.getDate() + 1);
+            }
+            dateInput.value = nextDay.toISOString().split('T')[0];
+        }
+
+        function isOperatingDay(date) {
+            const day = date.getDay();
+            return appState.config.operatingDays.includes(day);
+        }
+
+        function generateTimeSlots(meal) {
+            const config = appState.config[meal];
+            const slots = [];
+            let current = new Date(`2000-01-01T${config.inicio}`);
+            const end = new Date(`2000-01-01T${config.fim}`);
+            
+            while (current < end) {
+                slots.push(current.toTimeString().slice(0, 5));
+                current.setMinutes(current.getMinutes() + config.intervalo);
+            }
+            
+            return slots;
+        }
+
+        function loadAvailableSlots() {
+            const data = document.getElementById('dataReserva').value;
+            const refeicao = document.getElementById('refeicao').value;
+            const container = document.getElementById('timeSlots');
+            
+            if (!data) {
+                container.innerHTML = '<div class="col-span-full text-center py-4 text-stone-500">Selecione uma data</div>';
+                return;
+            }
+
+            const selectedDate = new Date(data);
+            if (!isOperatingDay(selectedDate)) {
+                container.innerHTML = '<div class="col-span-full text-center py-4 text-red-400"><i class="fas fa-store-slash mr-2"></i>Restaurante fechado neste dia</div>';
+                return;
+            }
+
+            const slots = generateTimeSlots(refeicao);
+            const existingReservations = appState.reservations.filter(r => r.data === data && r.refeicao === refeicao);
+            
+            container.innerHTML = slots.map(slot => {
+                const count = existingReservations.filter(r => r.horario === slot).length;
+                const isFull = count >= CONFIG.maxReservationsPerSlot;
+                const isSelected = document.getElementById('horarioSelecionado').value === slot;
+                
+                return `
+                    <button type="button" 
+                            onclick="selectTimeSlot('${slot}', this)" 
+                            class="py-3 px-2 rounded-lg text-sm font-medium transition transform hover:scale-105 ${isFull ? 'slot-occupied cursor-not-allowed opacity-50' : isSelected ? 'slot-selected' : 'slot-available'} text-white"
+                            ${isFull ? 'disabled' : ''}>
+                        ${slot}
+                        ${isFull ? '<br><span class="text-xs">Lotado</span>' : `<br><span class="text-xs opacity-75">${count}/${CONFIG.maxReservationsPerSlot}</span>`}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function selectTimeSlot(slot, btn) {
+            document.getElementById('horarioSelecionado').value = slot;
+            
+            document.querySelectorAll('#timeSlots button').forEach(b => {
+                if (!b.disabled) {
+                    b.classList.remove('slot-selected');
+                    b.classList.add('slot-available');
+                }
+            });
+            btn.classList.remove('slot-available');
+            btn.classList.add('slot-selected');
+        }
+
+        document.getElementById('reservaForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const horario = document.getElementById('horarioSelecionado').value;
+            if (!horario) {
+                alert('Por favor selecione um horário');
+                return;
+            }
+
+            const reserva = {
+                id: Date.now(),
+                nome: document.getElementById('nome').value,
+                telefone: document.getElementById('telefone').value,
+                email: document.getElementById('email').value,
+                data: document.getElementById('dataReserva').value,
+                refeicao: document.getElementById('refeicao').value,
+                horario: horario,
+                pessoas: parseInt(document.getElementById('pessoas').value),
+                observacoes: document.getElementById('observacoes').value,
+                estado: 'confirmada',
+                createdAt: new Date().toISOString()
+            };
+
+            const existing = appState.reservations.filter(r => 
+                r.data === reserva.data && 
+                r.refeicao === reserva.refeicao && 
+                r.horario === reserva.horario
+            );
+            
+            if (existing.length >= CONFIG.maxReservationsPerSlot) {
+                alert('Este horário acabou de ficar lotado. Por favor selecione outro.');
+                loadAvailableSlots();
+                return;
+            }
+
+            appState.reservations.push(reserva);
+            localStorage.setItem('donTasko_reservations', JSON.stringify(appState.reservations));
+            
+            document.getElementById('modalDetails').innerHTML = `
+                <strong>${reserva.nome}</strong><br>
+                ${reserva.data} às ${reserva.horario}<br>
+                ${reserva.pessoas} pessoa(s) - ${reserva.refeicao === 'almoco' ? 'Almoço' : 'Jantar'}
+            `;
+            document.getElementById('confirmationModal').classList.remove('hidden');
+            
+            e.target.reset();
+            document.getElementById('horarioSelecionado').value = '';
+            initializeDates();
+            loadAvailableSlots();
+            loadPublicAvailability();
+        });
+
+        function closeModal() {
+            document.getElementById('confirmationModal').classList.add('hidden');
+        }
+
+        function loadPublicAvailability() {
+            const container = document.getElementById('publicAvailability');
+            if (!container) return;
+
+            const today = new Date().toISOString().split('T')[0];
+            const nextDays = [];
+            
+            for (let i = 0; i < 5; i++) {
+                const d = new Date();
+                d.setDate(d.getDate() + i);
+                if (isOperatingDay(d)) {
+                    nextDays.push(d.toISOString().split('T')[0]);
+                }
+            }
+
+            if (nextDays.length === 0) {
+                container.innerHTML = '<div class="text-center py-4 text-stone-500">Restaurante fechado nos próximos dias</div>';
+                return;
+            }
+
+            let html = '';
+            nextDays.forEach(date => {
+                const dayReservations = appState.reservations.filter(r => r.data === date && r.estado === 'confirmada');
+                const almocoCount = dayReservations.filter(r => r.refeicao === 'almoco').length;
+                const jantarCount = dayReservations.filter(r => r.refeicao === 'jantar').length;
+                
+                const almocoSlots = generateTimeSlots('almoco').length;
+                const jantarSlots = generateTimeSlots('jantar').length;
+                
+                const almocoAvailable = Math.max(0, almocoSlots - almocoCount);
+                const jantarAvailable = Math.max(0, jantarSlots - jantarCount);
+                
+                const dateObj = new Date(date);
+                const dayName = dateObj.toLocaleDateString('pt-PT', { weekday: 'short' });
+                const dateStr = dateObj.toLocaleDateString('pt-PT', { day: 'numeric', month: 'short' });
+
+                html += `
+                    <div class="flex items-center justify-between bg-stone-900 rounded-lg p-4 border border-stone-700">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 rounded-full ${almocoAvailable > 0 || jantarAvailable > 0 ? 'bg-green-900' : 'bg-red-900'} flex items-center justify-center mr-3">
+                                <span class="${almocoAvailable > 0 || jantarAvailable > 0 ? 'text-green-400' : 'text-red-400'} font-bold text-sm">${dayName}</span>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-white text-sm">${dateStr}</p>
+                                <p class="text-xs text-stone-400">
+                                    ${almocoAvailable > 0 ? `<span class="text-yellow-400">Almoço: ${almocoAvailable} vagas</span>` : '<span class="text-red-400">Almoço: Lotado</span>'} | 
+                                    ${jantarAvailable > 0 ? `<span class="text-purple-400">Jantar: ${jantarAvailable} vagas</span>` : '<span class="text-red-400">Jantar: Lotado</span>'}
+                                </p>
+                            </div>
+                        </div>
+                        <i class="fas fa-${almocoAvailable > 0 || jantarAvailable > 0 ? 'check-circle text-green-500' : 'times-circle text-red-500'} text-xl"></i>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Scroll suave
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    document.getElementById('mobileMenu').classList.add('hidden');
+                }
+            });
+        });
     </script>
 </body>
 </html>
