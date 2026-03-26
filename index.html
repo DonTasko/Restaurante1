@@ -490,7 +490,7 @@
                     </div>
                 </div>
 
-                <!-- Garrafeira Management Tab -->
+                <!-- Garrafeira Management Tab - COM VOLUME EDITÁVEL -->
                 <div id="tab-garrafeira" class="admin-content hidden">
                     <div class="bg-stone-800 rounded-xl p-6 border border-stone-700 mb-6">
                         <div class="flex justify-between items-center mb-6">
@@ -498,6 +498,13 @@
                             <button onclick="addNewWineItem()" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition">
                                 <i class="fas fa-plus mr-2"></i>Adicionar Vinho
                             </button>
+                        </div>
+                        
+                        <div class="mb-4 p-3 bg-stone-900 rounded-lg border border-stone-700">
+                            <p class="text-sm text-stone-400">
+                                <i class="fas fa-info-circle text-amber-500 mr-2"></i>
+                                <strong>Dica:</strong> Pode definir o volume de cada garrafa (375ml, 750ml, 1.5L, etc.) no campo "Volume".
+                            </p>
                         </div>
                         
                         <div id="wineEditor" class="space-y-4"></div>
@@ -638,14 +645,15 @@
             ]
         };
 
+        // Dados padrão da Garrafeira com volumes variados
         const DEFAULT_WINES = [
             { id: 1, nome: "Pêra-Manca 2017", tipo: "tinto", regiao: "Alentejo", descricao: "Castas: Alicante Bouschet, Aragonez. Notas de frutos negros, chocolate e especiarias.", preco: 85, volume: "750ml" },
             { id: 2, nome: "Barca Velha 2008", tipo: "tinto", regiao: "Douro", descricao: "O ícone português. Complexo, elegante, notas de violeta, ameixa e tabaco.", preco: 450, volume: "750ml" },
-            { id: 3, nome: "Vinha Grande 2020", tipo: "tinto", regiao: "Douro", descricao: "Touriga Nacional, Touriga Franca. Frutado, equilibrado, taninos suaves.", preco: 28, volume: "750ml" },
+            { id: 3, nome: "Vinha Grande 2020 (375ml)", tipo: "tinto", regiao: "Douro", descricao: "Touriga Nacional, Touriga Franca. Frutado, equilibrado, taninos suaves.", preco: 15, volume: "375ml" },
             { id: 4, nome: "Esporão Reserva 2021", tipo: "branco", regiao: "Alentejo", descricao: "Antão Vaz, Arinto. Citrino, mineral, notas tropicais e boa acidez.", preco: 35, volume: "750ml" },
-            { id: 5, nome: "Marquês de Borba 2022", tipo: "branco", regiao: "Alentejo", descricao: "Fresco, frutado, ideal para acompanhar peixes e mariscos.", preco: 18, volume: "750ml" },
+            { id: 5, nome: "Marquês de Borba 2022 (375ml)", tipo: "branco", regiao: "Alentejo", descricao: "Fresco, frutado, ideal para acompanhar peixes e mariscos.", preco: 10, volume: "375ml" },
             { id: 6, nome: "Mateus Rosé Original", tipo: "rose", regiao: "Vinho Verde", descricao: "Frutado, leve, ligeiramente gasoso. Perfeito para dias quentes.", preco: 12, volume: "750ml" },
-            { id: 7, nome: "Murganheira Velha", tipo: "espumante", regiao: "Távora-Varosa", descricao: "Método clássico, 36 meses em cave. Bolha fina, complexo, elegante.", preco: 45, volume: "750ml" },
+            { id: 7, nome: "Murganheira Velha (Magnum)", tipo: "espumante", regiao: "Távora-Varosa", descricao: "Método clássico, 36 meses em cave. Bolha fina, complexo, elegante.", preco: 90, volume: "1.5L" },
             { id: 8, nome: "Mateus Sparkling Brut", tipo: "espumante", regiao: "Bairrada", descricao: "Fresco, cítrico, excelente como aperitivo ou para celebrações.", preco: 22, volume: "750ml" },
             { id: 9, nome: "Moët & Chandon Impérial", tipo: "espumante", regiao: "Champagne, França", descricao: "Brut, elegante, notas de maçã verde e flores brancas.", preco: 95, volume: "750ml" }
         ];
@@ -692,7 +700,7 @@
             if (filterDate) filterDate.value = today;
         });
 
-        // FUNÇÕES DE ADMIN - CORRIGIDAS E COMPLETAS
+        // FUNÇÕES DE ADMIN
         
         function handleAdminLogin(e) {
             e.preventDefault();
@@ -1018,7 +1026,7 @@
             alert('Menu guardado com sucesso!');
         }
 
-        // Gestão de Garrafeira
+        // Gestão de Garrafeira - COM VOLUME EDITÁVEL
         function renderWineEditor() {
             const container = document.getElementById('wineEditor');
             if (!container) return;
@@ -1030,9 +1038,12 @@
                 espumante: 'Espumante'
             };
 
+            // Opções de volume pré-definidas + campo personalizado
+            const volumeOptions = ['375ml', '500ml', '750ml', '1L', '1.5L', '3L', 'Outro'];
+
             container.innerHTML = appState.wines.map((wine, idx) => `
                 <div class="bg-stone-900 rounded-lg p-4 border border-stone-700">
-                    <div class="grid grid-cols-2 md:grid-cols-6 gap-2 items-end">
+                    <div class="grid grid-cols-2 md:grid-cols-7 gap-2 items-end">
                         <div class="col-span-2">
                             <label class="text-xs text-stone-500">Nome</label>
                             <input type="text" value="${wine.nome}" onchange="updateWineItem(${idx}, 'nome', this.value)" class="w-full bg-stone-800 border border-stone-600 rounded px-2 py-1 text-sm text-white">
@@ -1051,6 +1062,17 @@
                             <label class="text-xs text-stone-500">Preço</label>
                             <input type="number" value="${wine.preco}" onchange="updateWineItem(${idx}, 'preco', this.value)" class="w-full bg-stone-800 border border-stone-600 rounded px-2 py-1 text-sm text-white">
                         </div>
+                        <div>
+                            <label class="text-xs text-stone-500">Volume</label>
+                            <div class="flex gap-1">
+                                <select onchange="handleVolumeChange(${idx}, this.value)" class="flex-1 bg-stone-800 border border-stone-600 rounded px-2 py-1 text-sm text-white" id="volumeSelect-${idx}">
+                                    ${volumeOptions.map(v => `<option value="${v}" ${wine.volume === v ? 'selected' : ''}>${v}</option>`).join('')}
+                                </select>
+                                <input type="text" id="volumeCustom-${idx}" value="${wine.volume}" onchange="updateWineItem(${idx}, 'volume', this.value)" 
+                                    class="w-20 bg-stone-800 border border-stone-600 rounded px-2 py-1 text-sm text-white ${volumeOptions.includes(wine.volume) ? 'hidden' : ''}" 
+                                    placeholder="Ex: 375ml">
+                            </div>
+                        </div>
                         <div class="flex gap-2">
                             <button onclick="removeWineItem(${idx})" class="text-red-400 hover:text-red-300 px-2 py-1"><i class="fas fa-trash"></i></button>
                         </div>
@@ -1061,6 +1083,18 @@
                     </div>
                 </div>
             `).join('');
+        }
+
+        // Função para lidar com mudança de volume
+        function handleVolumeChange(idx, value) {
+            const customInput = document.getElementById(`volumeCustom-${idx}`);
+            if (value === 'Outro') {
+                customInput.classList.remove('hidden');
+                customInput.focus();
+            } else {
+                customInput.classList.add('hidden');
+                updateWineItem(idx, 'volume', value);
+            }
         }
 
         function addNewWineItem() {
@@ -1079,7 +1113,6 @@
         function updateWineItem(idx, campo, valor) {
             if (campo === 'preco') valor = parseFloat(valor);
             appState.wines[idx][campo] = valor;
-            renderWineEditor();
         }
 
         function removeWineItem(idx) {
